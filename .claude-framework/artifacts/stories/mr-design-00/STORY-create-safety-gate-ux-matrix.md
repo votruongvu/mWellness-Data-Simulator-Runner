@@ -4,7 +4,7 @@ phase: MR-DESIGN-00
 order: 5
 title: "Create safety gate UX matrix"
 depends_on: ["MWR-DESIGN-003", "MWR-DESIGN-004"]
-status: ready
+status: done
 ---
 
 # MWR-DESIGN-005 — Create Safety Gate Ux Matrix
@@ -107,3 +107,12 @@ Commit body must include story path, summary, validation results, non-goals pres
 ## Closeout Requirements
 
 Return story closeout with status, commit hash, files changed, design impact, validation results, and P0/P1/P2 followups.
+
+---
+
+## Execution Record — MR-DESIGN-00 phase loop
+- **Executed:** 2026-06-27 · branch `mr-design-00-stories`. **Status:** DONE.
+- **Deliverable:** `artifacts/design/mobile-runner/MOBILE_RUNNER_SAFETY_UX_MATRIX.md` — 12 mandatory gate→UX rules, the real-write gate chain, mode-visibility rule, canonical safety copy bank, terminology guard.
+- **Normalizations:** dry-run precedes real write; capability-before-permission; explain-before-OS-prompt; explicit confirm checkbox; unsupported/denied skipped-with-reason; no-fake-success; partial≠success; safety not user-disableable; Health Connect terminology.
+- **Validation:** markdown OK; links resolve. No product/RN/backend/native code.
+- **Followups:** none.
