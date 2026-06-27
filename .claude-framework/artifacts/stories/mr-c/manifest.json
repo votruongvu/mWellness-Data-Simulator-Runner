@@ -1,0 +1,77 @@
+{
+  "project": "mWellness-Mobile-Runner",
+  "phase": "MR-C",
+  "phase_name": "Native Writer MVP: iOS + Android",
+  "target_import_path": "artifacts/stories/mr-c/",
+  "story_count": 5,
+  "granularity": "capability-slice milestones, not file-level tasks",
+  "depends_on_phase": "MR-B",
+  "execution_order": [
+    "STORY-native-writer-readiness-payload-contract.md",
+    "STORY-ios-healthkit-capability-permission-bridge.md",
+    "STORY-ios-guarded-healthkit-write-poc.md",
+    "STORY-android-health-connect-capability-permission-write-poc.md",
+    "STORY-native-writer-qa-closeout-mapping-backlog.md"
+  ],
+  "stories": [
+    {
+      "order": 1,
+      "story_id": "MWR-MRC-001",
+      "file": "STORY-native-writer-readiness-payload-contract.md",
+      "depends_on": [],
+      "title": "Native Writer Readiness + Payload Contract"
+    },
+    {
+      "order": 2,
+      "story_id": "MWR-MRC-002",
+      "file": "STORY-ios-healthkit-capability-permission-bridge.md",
+      "depends_on": [
+        "MWR-MRC-001"
+      ],
+      "title": "iOS HealthKit Capability + Permission + Bridge"
+    },
+    {
+      "order": 3,
+      "story_id": "MWR-MRC-003",
+      "file": "STORY-ios-guarded-healthkit-write-poc.md",
+      "depends_on": [
+        "MWR-MRC-001",
+        "MWR-MRC-002"
+      ],
+      "title": "iOS Guarded HealthKit Write POC"
+    },
+    {
+      "order": 4,
+      "story_id": "MWR-MRC-004",
+      "file": "STORY-android-health-connect-capability-permission-write-poc.md",
+      "depends_on": [
+        "MWR-MRC-001"
+      ],
+      "title": "Android Health Connect Capability + Permission + Write POC"
+    },
+    {
+      "order": 5,
+      "story_id": "MWR-MRC-005",
+      "file": "STORY-native-writer-qa-closeout-mapping-backlog.md",
+      "depends_on": [
+        "MWR-MRC-001",
+        "MWR-MRC-002",
+        "MWR-MRC-003",
+        "MWR-MRC-004"
+      ],
+      "title": "Native Writer QA Closeout + Mapping Backlog"
+    }
+  ],
+  "hard_rules": [
+    "No fabricated per-operation health values",
+    "Stop with BACKEND_GAP or PAYLOAD_GAP if payload source is missing",
+    "No fake native success",
+    "No silent permission prompt",
+    "No unsupported/denied/invalid write attempts",
+    "No real write unless dry-run, payload, capability, permission, and confirmation gates pass",
+    "Minimal approved metric/record set only",
+    "No full run orchestration",
+    "No backend run reporting as completed behavior",
+    "No production readiness claim"
+  ]
+}
