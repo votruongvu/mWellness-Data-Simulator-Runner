@@ -4,7 +4,7 @@ phase: MR-B
 order: 3
 title: "Scenario Interpreter + Execution Plan Preview"
 depends_on: ["MWR-MRB-002"]
-status: ready
+status: done
 ---
 
 # MWR-MRB-003 — Scenario Interpreter + Execution Plan Preview
@@ -182,3 +182,12 @@ Commit body must include story path, summary, validation results, non-goals pres
 ## Closeout Requirements
 
 Return story closeout with status, commit hash, files changed, capability impact, verified backend URLs, validation results, and P0/P1/P2 followups.
+
+---
+
+## Execution Record — MR-B phase loop
+- **Executed:** 2026-06-27 · branch `main`. **Status:** DONE.
+- **Deliverable:** `src/runner/executionPlan.ts` (ExecutionPlan/PlanOperation/OperationStatus `writable|unsupported|permission_missing|invalid|skipped`/ReasonCode/PlanTotals); `src/runner/interpreter.ts` (pure `buildExecutionPlan`: Version + ScenarioSummary[] + catalog Metric[] → metric-level operations classified per destination platform via catalog `selectable`/`reason`; grouped by ordered scenarios; `permission_missing` reserved for MR-D, never emitted now); `src/screens/ExecutionPlanPreviewScreen.tsx` (P08: Dry-run mode badge, target, writable/unsupported/blocked totals, per-scenario rows).
+- **Honesty:** metric-level (not per-segment) — payload deferred; pure (no Date.now/random/network/native); no fabricated operation values.
+- **Validation:** tsc clean; validate-framework.sh PASS.
+- **Followups:** P1 — per-operation detail + permission_missing at MR-C/MR-D.
