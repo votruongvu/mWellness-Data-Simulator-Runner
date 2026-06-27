@@ -4,7 +4,7 @@ phase: MR-DESIGN-00
 order: 4
 title: "Create component kit and state matrix"
 depends_on: ["MWR-DESIGN-002", "MWR-DESIGN-003"]
-status: ready
+status: done
 ---
 
 # MWR-DESIGN-004 — Create Component Kit And State Matrix
@@ -104,3 +104,12 @@ Commit body must include story path, summary, validation results, non-goals pres
 ## Closeout Requirements
 
 Return story closeout with status, commit hash, files changed, design impact, validation results, and P0/P1/P2 followups.
+
+---
+
+## Execution Record — MR-DESIGN-00 phase loop
+- **Executed:** 2026-06-27 · branch `mr-design-00-stories`. **Status:** DONE.
+- **Deliverables:** `artifacts/design/mobile-runner/MOBILE_RUNNER_COMPONENT_KIT.md` (32 components + safety-critical rules) and `MOBILE_RUNNER_STATE_MATRIX.md` (per-screen states, operation classification, reason_codes, iOS/Android parity, safety-state invariants).
+- **Normalizations:** device-profile in TestCaseCard/VersionSummaryCard; PlatformBadge iOS·Apple Health / Android·Health Connect; RealWriteConfirmCard gate-disabled until dry-run+capability+permission+checkbox; partial_success distinct; no disable-safety/bypass/force-success/reorder/seed components.
+- **Validation:** markdown OK; links resolve. No product/RN/backend/native code.
+- **Followups:** none.
