@@ -4,7 +4,7 @@ phase: MR-DESIGN-00
 order: 7
 title: "Close design handoff loop"
 depends_on: ["MWR-DESIGN-001", "MWR-DESIGN-002", "MWR-DESIGN-003", "MWR-DESIGN-004", "MWR-DESIGN-005", "MWR-DESIGN-006"]
-status: ready
+status: done
 ---
 
 # MWR-DESIGN-007 — Close Design Handoff Loop
@@ -112,3 +112,13 @@ Commit body must include story path, summary, validation results, non-goals pres
 ## Closeout Requirements
 
 Return story closeout with status, commit hash, files changed, design impact, validation results, and P0/P1/P2 followups.
+
+---
+
+## Execution Record — MR-DESIGN-00 phase loop
+- **Executed:** 2026-06-27 · branch `mr-design-00-stories`. **Status:** DONE.
+- **Deliverable:** `artifacts/design/mobile-runner/MOBILE_RUNNER_DESIGN_HANDOFF_CLOSEOUT.md`; TRACEABILITY_MATRIX + USER_STORY_INDEX updated with commit hashes.
+- **Validation:** `validate-framework.sh` PASS (0 errors); context-pack OK; links 484/0 broken; no `profile: athlete` as truth; no "Google HealthKit"; Android happy path present.
+- **Confirmations:** design subordinate to Master REQ; environment UX simplified; iOS + Android happy paths covered; safety gates mandatory; no product/RN/backend/native code; no MR0/MR1 stories.
+- **Readiness:** MR0 READY; MR1 READY_WITH_FOLLOWUPS (token storage hard gate).
+- **Followups:** P1 — MR0 lock routes/writability/token-storage/run-scope + device QA matrix; P2 — retrieve exact v2.dc.html when MCP-readable.

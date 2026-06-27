@@ -81,3 +81,17 @@ After all stories are complete:
 - confirm no product/native/backend code was added
 - classify readiness for MR0 and MR1
 - stop for human review
+
+## Execution Status (run-phase-loop, 2026-06-27, branch mr-design-00-stories)
+
+| Order | Story ID | Commit | Status |
+|---:|---|---|---|
+| 01 | MWR-DESIGN-001 | `302a7ac` | DONE |
+| 02 | MWR-DESIGN-002 | `e99d362` | DONE |
+| 03 | MWR-DESIGN-003 | `56cd461` | DONE |
+| 04 | MWR-DESIGN-004 | `6972cbb` | DONE |
+| 05 | MWR-DESIGN-005 | `74224a5` | DONE |
+| 06 | MWR-DESIGN-006 | `97205e8` | DONE |
+| 07 | MWR-DESIGN-007 | (closeout commit) | DONE |
+
+Phase result: **all 7 stories DONE**. Loop stops for human review. Design subordinate to Master REQ; MCP `v2.dc.html` not retrievable (PDF+spec archived). Readiness: MR0 READY, MR1 READY_WITH_FOLLOWUPS.
