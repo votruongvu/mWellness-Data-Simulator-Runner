@@ -1,0 +1,107 @@
+{
+  "project": "mWellness-Mobile-Runner",
+  "phase": "MR-FRAMEWORK-00",
+  "phase_name": "Claude Framework Bootstrap",
+  "target_import_path": "artifacts/stories/mr-framework-00/",
+  "story_count": 7,
+  "execution_order": [
+    "STORY-extract-old-framework-reusable-assets.md",
+    "STORY-bootstrap-mobile-runner-framework-skeleton.md",
+    "STORY-add-mobile-safety-guardrails-and-human-gates.md",
+    "STORY-add-phase-loop-closeout-and-context-refresh-process.md",
+    "STORY-create-mobile-runner-framework-core-docs.md",
+    "STORY-adapt-mobile-framework-checklists-agents-and-validators.md",
+    "STORY-validate-framework-bootstrap-and-close-mr-framework-00.md"
+  ],
+  "stories": [
+    {
+      "order": 1,
+      "story_id": "MWR-FW-001",
+      "file": "STORY-extract-old-framework-reusable-assets.md",
+      "depends_on": [],
+      "title": "Extract old framework reusable assets",
+      "area": "framework/audit"
+    },
+    {
+      "order": 2,
+      "story_id": "MWR-FW-002",
+      "file": "STORY-bootstrap-mobile-runner-framework-skeleton.md",
+      "depends_on": [
+        "MWR-FW-001"
+      ],
+      "title": "Bootstrap Mobile Runner framework skeleton",
+      "area": "framework/bootstrap"
+    },
+    {
+      "order": 3,
+      "story_id": "MWR-FW-003",
+      "file": "STORY-add-mobile-safety-guardrails-and-human-gates.md",
+      "depends_on": [
+        "MWR-FW-002"
+      ],
+      "title": "Add mobile safety guardrails and human gates",
+      "area": "framework/safety"
+    },
+    {
+      "order": 4,
+      "story_id": "MWR-FW-004",
+      "file": "STORY-add-phase-loop-closeout-and-context-refresh-process.md",
+      "depends_on": [
+        "MWR-FW-002",
+        "MWR-FW-003"
+      ],
+      "title": "Add phase loop closeout and context refresh process",
+      "area": "framework/commands"
+    },
+    {
+      "order": 5,
+      "story_id": "MWR-FW-005",
+      "file": "STORY-create-mobile-runner-framework-core-docs.md",
+      "depends_on": [
+        "MWR-FW-002",
+        "MWR-FW-003"
+      ],
+      "title": "Create Mobile Runner framework core docs",
+      "area": "framework/docs"
+    },
+    {
+      "order": 6,
+      "story_id": "MWR-FW-006",
+      "file": "STORY-adapt-mobile-framework-checklists-agents-and-validators.md",
+      "depends_on": [
+        "MWR-FW-001",
+        "MWR-FW-003",
+        "MWR-FW-004"
+      ],
+      "title": "Adapt mobile framework checklists agents and validators",
+      "area": "framework/checklists"
+    },
+    {
+      "order": 7,
+      "story_id": "MWR-FW-007",
+      "file": "STORY-validate-framework-bootstrap-and-close-mr-framework-00.md",
+      "depends_on": [
+        "MWR-FW-001",
+        "MWR-FW-002",
+        "MWR-FW-003",
+        "MWR-FW-004",
+        "MWR-FW-005",
+        "MWR-FW-006"
+      ],
+      "title": "Validate framework bootstrap and close MR-FRAMEWORK-00",
+      "area": "framework/closeout"
+    }
+  ],
+  "hard_rules": [
+    "Framework/docs-only.",
+    "New Mobile Runner Master REQ is canonical.",
+    "Old DM1/app REQ is legacy/superseded.",
+    "No product code.",
+    "No React Native scaffold.",
+    "No MR0/MR1 stories.",
+    "No HealthKit or Health Connect native write implementation.",
+    "No Google Fit/vendor SDKs.",
+    "No fake native write success.",
+    "No accidental health data writes."
+  ]
+}
