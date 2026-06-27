@@ -4,7 +4,7 @@ phase: MR-DESIGN-00
 order: 6
 title: "Create implementation handoff"
 depends_on: ["MWR-DESIGN-002", "MWR-DESIGN-003", "MWR-DESIGN-004", "MWR-DESIGN-005"]
-status: ready
+status: done
 ---
 
 # MWR-DESIGN-006 — Create Implementation Handoff
@@ -109,3 +109,12 @@ Commit body must include story path, summary, validation results, non-goals pres
 ## Closeout Requirements
 
 Return story closeout with status, commit hash, files changed, design impact, validation results, and P0/P1/P2 followups.
+
+---
+
+## Execution Record — MR-DESIGN-00 phase loop
+- **Executed:** 2026-06-27 · branch `mr-design-00-stories`. **Status:** DONE.
+- **Deliverable:** `artifacts/design/mobile-runner/MOBILE_RUNNER_IMPLEMENTATION_HANDOFF.md` — screen→phase→dependency map, component→phase, state→phase, API + native dependency summaries, hard-gate triggers, MR0/MR1 readiness.
+- **Normalizations:** maps to MR1–MR7 (no MR0/MR1 stories created); env stays lightweight at MR1; real writes (MR4/MR5) flagged hard-gated; per-metric writability TO_VERIFY; routes locked at MR0.
+- **Validation:** markdown OK; links resolve. No product/RN/backend/native code; no MR0/MR1 stories.
+- **Followups:** P1 — MR0 must lock routes + per-metric writability + token storage + QA/device matrix (framework F1).
