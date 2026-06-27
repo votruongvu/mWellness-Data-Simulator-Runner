@@ -1,0 +1,67 @@
+{
+  "project": "mWellness-Mobile-Runner",
+  "phase": "MR-A",
+  "phase_name": "Foundation + Contracts + Auth Shell",
+  "target_import_path": "artifacts/stories/mr-a/",
+  "story_count": 4,
+  "granularity": "capability-slice milestones, not file-level tasks",
+  "replaces": [
+    "old MR0 Contract Baseline",
+    "old MR1 Mobile Foundation/Auth"
+  ],
+  "execution_order": [
+    "STORY-minimal-contract-baseline.md",
+    "STORY-react-native-app-foundation-navigation-shell.md",
+    "STORY-auth-session-secure-storage-backend-client.md",
+    "STORY-dashboard-error-states-mr-a-closeout.md"
+  ],
+  "stories": [
+    {
+      "order": 1,
+      "story_id": "MWR-MRA-001",
+      "file": "STORY-minimal-contract-baseline.md",
+      "depends_on": [],
+      "title": "Minimal Contract Baseline"
+    },
+    {
+      "order": 2,
+      "story_id": "MWR-MRA-002",
+      "file": "STORY-react-native-app-foundation-navigation-shell.md",
+      "depends_on": [
+        "MWR-MRA-001"
+      ],
+      "title": "React Native App Foundation + Navigation Shell"
+    },
+    {
+      "order": 3,
+      "story_id": "MWR-MRA-003",
+      "file": "STORY-auth-session-secure-storage-backend-client.md",
+      "depends_on": [
+        "MWR-MRA-001",
+        "MWR-MRA-002"
+      ],
+      "title": "Auth Session + Secure Storage + Backend Client"
+    },
+    {
+      "order": 4,
+      "story_id": "MWR-MRA-004",
+      "file": "STORY-dashboard-error-states-mr-a-closeout.md",
+      "depends_on": [
+        "MWR-MRA-001",
+        "MWR-MRA-002",
+        "MWR-MRA-003"
+      ],
+      "title": "Dashboard / Error States / MR-A Closeout"
+    }
+  ],
+  "hard_rules": [
+    "Reduce loop scope, not only story count",
+    "Master REQ remains canonical",
+    "No test case browser/detail",
+    "No execution plan/dry-run",
+    "No native permission/write",
+    "No backend fake success",
+    "Secure OS-backed token/session storage target",
+    "Lightweight environment UX"
+  ]
+}
