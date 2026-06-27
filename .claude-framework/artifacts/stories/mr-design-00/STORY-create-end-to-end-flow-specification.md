@@ -4,7 +4,7 @@ phase: MR-DESIGN-00
 order: 3
 title: "Create end-to-end flow specification"
 depends_on: ["MWR-DESIGN-002"]
-status: ready
+status: done
 ---
 
 # MWR-DESIGN-003 — Create End-To-End Flow Specification
@@ -108,3 +108,12 @@ Commit body must include story path, summary, validation results, non-goals pres
 ## Closeout Requirements
 
 Return story closeout with status, commit hash, files changed, design impact, validation results, and P0/P1/P2 followups.
+
+---
+
+## Execution Record — MR-DESIGN-00 phase loop
+- **Executed:** 2026-06-27 · branch `mr-design-00-stories`. **Status:** DONE.
+- **Deliverable:** `artifacts/design/mobile-runner/MOBILE_RUNNER_E2E_FLOWS.md` — flows A (iOS happy), A′ (Android happy), B dry-run-only, C real-write, D permission denied/partial, E unsupported metric, F backend/auth error, G real-write safety; coverage matrix; 7 safety invariants.
+- **Normalizations:** added the Android Health Connect happy path (A′); dry-run precedes real write; gate chain (dry-run+capability+permission+confirm) enforced at P12; denied/unsupported skipped-with-reason, never attempted; partial ≠ success; no fake success.
+- **Validation:** markdown OK; links resolve. No product/RN/backend/native code.
+- **Followups:** none.
