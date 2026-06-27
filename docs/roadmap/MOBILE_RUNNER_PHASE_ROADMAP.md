@@ -20,7 +20,9 @@
 
 | Phase | Name | Purpose |
 |---|---|---|
-| MR-FRAMEWORK-00 | Claude Framework Bootstrap | Dedicated mobile framework, guardrails, context, commands. **(Current phase — docs + validators only.)** |
+| MR-FRAMEWORK-00 | Claude Framework Bootstrap | Dedicated mobile framework, guardrails, context, commands. (Docs + validators only.) |
+| MR-FRAMEWORK-01 | Framework Context Completeness & MR0 Readiness | Audit framework completeness, confirm DM1-clean, classify MR0 readiness. (Docs only.) |
+| MR-DESIGN-00 | Claude Design Handoff | Design contract / UX + architecture handoff **before** any implementation. Implementation (MR1+) does not begin until the MR-DESIGN-00 handoff is approved. (Docs only.) |
 | MR0 | Mobile Runner Contract Alignment | Lock backend/mobile/native contracts and safety gates **before** implementation. |
 | MR1 | Mobile Foundation / Auth / API Client | App shell, auth/session, backend client, config. |
 | MR2 | Test Case Browser + Scenario Loader | Fetch runnable test cases, versions, ordered scenarios. |
@@ -29,6 +31,15 @@
 | MR5 | Health Connect Writer POC | Health Connect permission/capability/write POC (hard-gated). |
 | MR6 | Run Orchestration + Result Reporting | Run ordered scenarios, progress, result/reporting. |
 | MR7 | Safety QA / Release Candidate | Hardening, QA matrix, diagnostics, RC docs. |
+
+## Framework & design phases (non-product)
+
+`MR-FRAMEWORK-00` (bootstrap), `MR-FRAMEWORK-01` (context completeness + MR0 readiness), and
+`MR-DESIGN-00` (Claude Design handoff) are **docs/governance phases — no product code**.
+**`MR-DESIGN-00` — the Claude Design / architecture + UX handoff — must be approved before any
+implementation phase (MR1+) begins.** The execution-layer phase queue
+(`.claude-framework/execution/MWR_PHASE_QUEUE.md`) tracks MR-FRAMEWORK-00 → MR7; aligning it to
+also name MR-FRAMEWORK-01 / MR-DESIGN-00 is a P2 follow-up.
 
 ## Ordering constraints (load-bearing — from REQ §17)
 
