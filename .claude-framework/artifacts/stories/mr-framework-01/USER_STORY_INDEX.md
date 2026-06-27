@@ -59,3 +59,16 @@ MR-FRAMEWORK-01 <story-file-name-without-md>
 ## Phase Closeout Rule
 
 After all stories are complete, summarize story statuses, commit hashes, validations, files changed, source hierarchy, safety readiness, design readiness, MR0/MR1 readiness, and stop for human review.
+
+## Execution Status (run-phase-loop, 2026-06-27, branch mr-framework-01-stories)
+| Order | Story ID | Commit | Status |
+|---:|---|---|---|
+| 01 | MWR-FW1-001 | `680c643` | DONE |
+| 02 | MWR-FW1-002 | `4466189` | DONE |
+| 03 | MWR-FW1-003 | `ab1bd84` | DONE |
+| 04 | MWR-FW1-004 | `7bf050a` | DONE |
+| 05 | MWR-FW1-005 | `bcfc573` | DONE |
+| 06 | MWR-FW1-006 | `19a027c` | DONE |
+| 07 | MWR-FW1-007 | (closeout) | DONE |
+
+Phase result: **7/7 DONE**. MR0 readiness: READY_WITH_FOLLOWUPS. MR1 readiness: READY_WITH_FOLLOWUPS. Loop stops for human review.
