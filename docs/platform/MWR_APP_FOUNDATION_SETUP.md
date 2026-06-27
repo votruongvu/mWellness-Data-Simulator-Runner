@@ -106,3 +106,19 @@ catalog/authoring/seed/upload/reorder surface.
 - Terminology: Apple Health / HealthKit / iOS; Health Connect / Android. Never
   "Google HealthKit", never Google Fit.
 ```
+
+## Local backend config (`.env`)
+The backend base URL is supplied via a **gitignored** `.env` at repo root, read at
+build time by `react-native-dotenv` as the `@env` module (`babel.config.js` →
+`src/config/env.ts`). Copy `.env.example` → `.env` and set it:
+
+```
+API_BASE_URL=http://localhost:8080
+ENV_LABEL=local
+```
+
+`.env` is ignored (`.gitignore` `.env*`, with `!.env.example` committed as the
+template). If `.env` is absent/empty, `apiBaseUrl` resolves to `null` and the app
+surfaces **BACKEND_UNAVAILABLE** — it never fabricates a session. `localhost:8080`
+is a local dev host only (not a secret, not a production/default endpoint).
+Requires `npm install` (adds `react-native-dotenv`) — not run in this environment.
