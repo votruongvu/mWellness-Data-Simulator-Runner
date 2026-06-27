@@ -36,10 +36,13 @@ export function DashboardScreen(): React.JSX.Element {
         <View style={styles.headerRow}>
           <View style={styles.flex}>
             <Text style={styles.hello}>
-              {user?.displayName ?? user?.email ?? 'Signed in'}
+              {user?.name ?? user?.username ?? 'Signed in'}
             </Text>
-            {user?.userId ? (
-              <Text style={styles.userId}>User {user.userId}</Text>
+            {user?.username ? (
+              <Text style={styles.userId}>
+                {user.username}
+                {user.role ? ` · ${user.role}` : ''}
+              </Text>
             ) : null}
           </View>
           <EnvBadge />
@@ -59,12 +62,12 @@ export function DashboardScreen(): React.JSX.Element {
           </Text>
         </View>
 
-        {/* Browse test cases — disabled until MR-B. */}
+        {/* Browse test cases — enabled in MR-B (read-only from the backend). */}
         <View style={styles.section}>
           <PrimaryButton
             title="Browse test cases"
-            disabled
-            subtitle="Coming in MR-B"
+            subtitle="Read-only · loaded from the MWDS backend"
+            onPress={() => navigation.navigate('TestCaseList')}
           />
         </View>
 

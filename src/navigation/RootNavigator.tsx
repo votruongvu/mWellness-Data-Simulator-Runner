@@ -19,6 +19,11 @@ import {DashboardScreen} from '../screens/DashboardScreen';
 import {LoginScreen} from '../screens/LoginScreen';
 import {SettingsScreen} from '../screens/SettingsScreen';
 import {SplashScreen} from '../screens/SplashScreen';
+import {TestCaseListScreen} from '../screens/TestCaseListScreen';
+import {TestCaseDetailScreen} from '../screens/TestCaseDetailScreen';
+import {VersionScenariosScreen} from '../screens/VersionScenariosScreen';
+import {ExecutionPlanPreviewScreen} from '../screens/ExecutionPlanPreviewScreen';
+import {DryRunResultScreen} from '../screens/DryRunResultScreen';
 import {BackendUnavailableScreen} from '../screens/errors/BackendUnavailableScreen';
 import {SessionExpiredScreen} from '../screens/errors/SessionExpiredScreen';
 import type {RootStackParamList} from './types';
@@ -53,6 +58,31 @@ export function RootNavigator(): React.JSX.Element {
             name="Settings"
             component={SettingsScreen}
             options={{title: 'Settings'}}
+          />
+          <Stack.Screen
+            name="TestCaseList"
+            component={TestCaseListScreen}
+            options={{title: 'Test cases'}}
+          />
+          <Stack.Screen
+            name="TestCaseDetail"
+            component={TestCaseDetailScreen}
+            options={{title: 'Test case'}}
+          />
+          <Stack.Screen
+            name="VersionScenarios"
+            component={VersionScenariosScreen}
+            options={{title: 'Version'}}
+          />
+          <Stack.Screen
+            name="ExecutionPlanPreview"
+            component={ExecutionPlanPreviewScreen}
+            options={{title: 'Execution plan'}}
+          />
+          <Stack.Screen
+            name="DryRunResult"
+            component={DryRunResultScreen}
+            options={{title: 'Dry-run result'}}
           />
           <Stack.Screen
             name="BackendUnavailable"

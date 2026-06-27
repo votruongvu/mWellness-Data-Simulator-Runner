@@ -32,24 +32,24 @@ export function LoginScreen(): React.JSX.Element {
   const navigation = useNavigation<Nav>();
   const {login, lastError, env, backendConfigured, clearError} = useSession();
 
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
   const canSubmit = useMemo(
-    () => email.trim().length > 0 && password.length > 0 && !submitting,
-    [email, password, submitting],
+    () => username.trim().length > 0 && password.length > 0 && !submitting,
+    [username, password, submitting],
   );
 
   const onSignIn = useCallback(async () => {
     clearError();
     setSubmitting(true);
     try {
-      await login(email.trim(), password);
+      await login(username.trim(), password);
     } finally {
       setSubmitting(false);
     }
-  }, [clearError, email, password, login]);
+  }, [clearError, username, password, login]);
 
   // If the failure was a backend-reachability problem, escalate to E02.
   React.useEffect(() => {
@@ -92,17 +92,17 @@ export function LoginScreen(): React.JSX.Element {
           ) : null}
 
           <View style={styles.form}>
-            <Text style={styles.label}>Email</Text>
+            <Text style={styles.label}>Username</Text>
             <TextInput
               style={styles.input}
-              value={email}
-              onChangeText={setEmail}
+              value={username}
+              onChangeText={setUsername}
               autoCapitalize="none"
               autoCorrect={false}
-              keyboardType="email-address"
-              placeholder="qa.user@example.com"
+              keyboardType="default"
+              placeholder="qa.user"
               placeholderTextColor={colors.textMuted}
-              accessibilityLabel="Email"
+              accessibilityLabel="Username"
             />
 
             <Text style={styles.label}>Password</Text>

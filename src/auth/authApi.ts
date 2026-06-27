@@ -1,31 +1,35 @@
 /**
- * MR-A — Auth API calls against the MWDS backend.
+ * Auth API calls against the MWDS backend.
  *
- * Shapes follow the MR-A contract baseline (TO_VERIFY against real MWDS):
- *   POST /auth/login  -> { access_token, refresh_token?, expires_in, user }
- *   GET  /auth/me     -> { user }
- *   POST /auth/logout
- *   POST /auth/refresh (optional; kept minimal)
+ * Reconciled to the VERIFIED MWDS routes (read-only + login/logout only):
+ *   POST /api/v1/auth/login  body { username, password }
+ *        -> 200 { token, token_type: "Bearer", expires_at: ISO, user }
+ *        -> 401/400 error envelope.
+ *   GET  /api/v1/auth/me     -> { user }
+ *   POST /api/v1/auth/logout -> 204
  *
- * No backend configured => apiRequest returns BACKEND_UNAVAILABLE. No call here
- * fabricates a session on failure (NO_FAKE_SUCCESS / BACKEND_API_GATE).
+ * There is NO refresh route in the verified contract; a refresh helper is
+ * intentionally absent (we do not invent endpoints). No backend configured =>
+ * apiRequest returns BACKEND_UNAVAILABLE. No call here fabricates a session on
+ * failure (NO_FAKE_SUCCESS / BACKEND_API_GATE).
  */
 
 import {apiRequest} from '../backend/apiClient';
 import {ApiResult} from '../backend/types';
 
-/** Backend user shape (subset we rely on). */
+/** Backend user shape (subset we rely on) — real MWDS fields. */
 export interface BackendUser {
   id: string;
-  display_name?: string;
-  email?: string;
+  username: string;
+  name: string;
+  role: string;
 }
 
 export interface LoginResponse {
-  access_token: string;
-  refresh_token?: string;
-  /** Seconds until the access token expires. */
-  expires_in: number;
+  token: string;
+  token_type: 'Bearer';
+  /** ISO-8601 timestamp when the token expires. */
+  expires_at: string;
   user: BackendUser;
 }
 
@@ -33,22 +37,16 @@ export interface MeResponse {
   user: BackendUser;
 }
 
-export interface RefreshResponse {
-  access_token: string;
-  refresh_token?: string;
-  expires_in: number;
-}
-
 /** Authenticate against the MWDS backend. The login call is unauthenticated. */
 export function login(
-  email: string,
+  username: string,
   password: string,
 ): Promise<ApiResult<LoginResponse>> {
   return apiRequest<LoginResponse>({
     method: 'POST',
-    path: '/auth/login',
+    path: '/api/v1/auth/login',
     authenticated: false,
-    body: {email, password},
+    body: {username, password},
   });
 }
 
@@ -56,7 +54,7 @@ export function login(
 export function me(): Promise<ApiResult<MeResponse>> {
   return apiRequest<MeResponse>({
     method: 'GET',
-    path: '/auth/me',
+    path: '/api/v1/auth/me',
     authenticated: true,
   });
 }
@@ -65,19 +63,7 @@ export function me(): Promise<ApiResult<MeResponse>> {
 export function logout(): Promise<ApiResult<void>> {
   return apiRequest<void>({
     method: 'POST',
-    path: '/auth/logout',
+    path: '/api/v1/auth/logout',
     authenticated: true,
-  });
-}
-
-/** Optional refresh (kept minimal in MR-A; only used if the backend supports it). */
-export function refresh(
-  refreshToken: string,
-): Promise<ApiResult<RefreshResponse>> {
-  return apiRequest<RefreshResponse>({
-    method: 'POST',
-    path: '/auth/refresh',
-    authenticated: false,
-    body: {refresh_token: refreshToken},
   });
 }

@@ -24,7 +24,7 @@ export function SettingsScreen(): React.JSX.Element {
         <View style={styles.row}>
           <Text style={styles.label}>Account</Text>
           <Text style={styles.value}>
-            {user?.displayName ?? user?.email ?? user?.userId ?? '—'}
+            {user?.name ?? user?.username ?? user?.userId ?? '—'}
           </Text>
         </View>
 

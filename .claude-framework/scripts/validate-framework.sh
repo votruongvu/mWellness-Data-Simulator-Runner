@@ -173,8 +173,11 @@ done
 
 # 17. macOS metadata must not be tracked ------------------------------------
 echo "[17] macOS metadata guard"
-if find . -path ./.git -prune -o \( -name '__MACOSX' -o -name '.DS_Store' -o -name '._*' \) -print 2>/dev/null | grep -q .; then
-  fail "macOS metadata present (__MACOSX/.DS_Store/._*) — remove before commit"
+# Only git-TRACKED files matter — gitignored trees (node_modules/, ios/Pods,
+# android/build, etc.) legitimately contain third-party .DS_Store and are never
+# committed. The real risk is committing macOS cruft, so check the index.
+if git ls-files 2>/dev/null | grep -qE '(^|/)(\.DS_Store|\._|__MACOSX)'; then
+  fail "macOS metadata is git-tracked (__MACOSX/.DS_Store/._*) — git rm it before commit"
 fi
 
 # 18. Context-pack path validation ------------------------------------------

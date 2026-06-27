@@ -1,14 +1,18 @@
 /**
- * MR-A — Backend API client base (fetch wrapper).
+ * Backend API client base (fetch wrapper).
  *
  * Rules (load-bearing):
  *  - Base URL comes from getEnv(). If null/empty => there is NO backend; the
- *    client returns/throws a BACKEND_UNAVAILABLE ApiError. It NEVER fabricates
- *    a success (NO_FAKE_SUCCESS_GATE, BACKEND_API_GATE).
+ *    client returns a BACKEND_UNAVAILABLE ApiError. It NEVER fabricates a
+ *    success (NO_FAKE_SUCCESS_GATE, BACKEND_API_GATE).
  *  - Bearer token is injected from a TokenProvider (by reference). Tokens are
  *    never logged (redaction on every log path).
- *  - Captures the `x-request-id` correlation header (TO_VERIFY) on every call.
- *  - Maps non-2xx + transport errors to typed ApiError:
+ *  - Maps non-2xx + transport errors to a typed ApiError, reading the REAL
+ *    MWDS error envelope from the response BODY:
+ *        { "error": { code, message, request_id, details? } }
+ *    The correlation id prefers `error.request_id` (body), falling back to the
+ *    `x-request-id` response header.
+ *  - Transport status -> normalized code:
  *      401 -> AUTH_EXPIRED · 403 -> FORBIDDEN · 404 -> NOT_FOUND
  *      400/422 -> VALIDATION · 503 / network -> BACKEND_UNAVAILABLE · else UNKNOWN
  */
@@ -18,12 +22,14 @@ import {redactToString} from '../shared/redaction';
 import {
   ApiError,
   ApiErrorCode,
+  ApiErrorDetail,
   ApiResult,
+  isBackendErrorEnvelope,
   RequestOptions,
   TokenProvider,
 } from './types';
 
-const REQUEST_ID_HEADER = 'x-request-id'; // TO_VERIFY against MWDS backend.
+const REQUEST_ID_HEADER = 'x-request-id';
 const DEFAULT_TIMEOUT_MS = 15000;
 
 let tokenProvider: TokenProvider = () => null;
@@ -38,9 +44,20 @@ export function makeApiError(
   code: ApiErrorCode,
   message: string,
   httpStatus: number,
-  requestId?: string,
+  extra?: {
+    requestId?: string;
+    backendCode?: string;
+    details?: ApiErrorDetail[];
+  },
 ): ApiError {
-  return {code, message, httpStatus, requestId};
+  return {
+    code,
+    message,
+    httpStatus,
+    requestId: extra?.requestId,
+    backendCode: extra?.backendCode,
+    details: extra?.details,
+  };
 }
 
 function classifyStatus(status: number): ApiErrorCode {
@@ -65,6 +82,22 @@ function joinUrl(base: string, path: string): string {
   const b = base.replace(/\/+$/, '');
   const p = path.startsWith('/') ? path : `/${path}`;
   return `${b}${p}`;
+}
+
+function buildQuery(
+  query?: Record<string, string | number | boolean | undefined>,
+): string {
+  if (!query) {
+    return '';
+  }
+  const parts: string[] = [];
+  for (const [key, value] of Object.entries(query)) {
+    if (value === undefined) {
+      continue;
+    }
+    parts.push(`${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`);
+  }
+  return parts.length ? `?${parts.join('&')}` : '';
 }
 
 /**
@@ -92,12 +125,13 @@ export async function apiRequest<T>(
     method = 'GET',
     path,
     body,
+    query,
     headers = {},
     authenticated = true,
     timeoutMs = DEFAULT_TIMEOUT_MS,
   } = options;
 
-  const url = joinUrl(env.apiBaseUrl as string, path);
+  const url = joinUrl(env.apiBaseUrl as string, path) + buildQuery(query);
 
   const finalHeaders: Record<string, string> = {
     Accept: 'application/json',
@@ -126,7 +160,7 @@ export async function apiRequest<T>(
     });
   } catch (err) {
     // Network/transport/abort failure: no response => BACKEND_UNAVAILABLE.
-    // Note: the error is redacted before any logging the caller may do.
+    // The error is redacted before any logging the caller may do.
     void redactToString(err);
     return {
       ok: false,
@@ -140,7 +174,7 @@ export async function apiRequest<T>(
     clearTimeout(timer);
   }
 
-  const requestId = response.headers.get(REQUEST_ID_HEADER) ?? undefined;
+  const headerRequestId = response.headers.get(REQUEST_ID_HEADER) ?? undefined;
 
   // Parse body defensively (may be empty or non-JSON on errors).
   let parsed: unknown = undefined;
@@ -154,27 +188,57 @@ export async function apiRequest<T>(
   }
 
   if (!response.ok) {
-    const code = classifyStatus(response.status);
-    const message = extractMessage(parsed) ?? `Request failed (${response.status}).`;
     return {
       ok: false,
-      error: makeApiError(code, message, response.status, requestId),
+      error: mapErrorEnvelope(parsed, response.status, headerRequestId),
     };
   }
 
+  const requestId = pickRequestId(parsed, headerRequestId);
   return {ok: true, data: parsed as T, requestId};
 }
 
-/** Best-effort message extraction from a backend error body (never a token). */
-function extractMessage(parsed: unknown): string | undefined {
-  if (parsed && typeof parsed === 'object') {
-    const obj = parsed as Record<string, unknown>;
-    if (typeof obj.message === 'string') {
-      return obj.message;
-    }
-    if (typeof obj.error === 'string') {
-      return obj.error;
-    }
+/**
+ * Map a non-2xx response into an ApiError, reading the real MWDS error
+ * envelope `{ error: { code, message, request_id, details } }` from the body.
+ * Falls back gracefully when the body is empty / non-conforming.
+ */
+function mapErrorEnvelope(
+  parsed: unknown,
+  status: number,
+  headerRequestId: string | undefined,
+): ApiError {
+  const code = classifyStatus(status);
+  if (isBackendErrorEnvelope(parsed)) {
+    const env = parsed.error;
+    return makeApiError(
+      code,
+      env.message?.trim() || `Request failed (${status}).`,
+      status,
+      {
+        requestId: env.request_id || headerRequestId,
+        backendCode: env.code,
+        details: Array.isArray(env.details) ? env.details : undefined,
+      },
+    );
   }
-  return undefined;
+  return makeApiError(code, `Request failed (${status}).`, status, {
+    requestId: headerRequestId,
+  });
+}
+
+/** On success, prefer a body-level request id if the backend echoes one. */
+function pickRequestId(
+  parsed: unknown,
+  headerRequestId: string | undefined,
+): string | undefined {
+  if (
+    parsed &&
+    typeof parsed === 'object' &&
+    'request_id' in parsed &&
+    typeof (parsed as {request_id: unknown}).request_id === 'string'
+  ) {
+    return (parsed as {request_id: string}).request_id;
+  }
+  return headerRequestId;
 }

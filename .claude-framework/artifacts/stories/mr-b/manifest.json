@@ -1,0 +1,109 @@
+{
+  "project": "mWellness-Mobile-Runner",
+  "phase": "MR-B",
+  "phase_name": "Runnable Data Loading + Dry-run Planner",
+  "version": "v2-backend-urls",
+  "target_import_path": "artifacts/stories/mr-b/",
+  "story_count": 4,
+  "granularity": "capability-slice milestones, not file-level tasks",
+  "depends_on_phase": "MR-A",
+  "backend_routes": {
+    "operational": [
+      "GET /healthz",
+      "GET /readyz",
+      "GET /api/v1/meta"
+    ],
+    "auth": [
+      "POST /api/v1/auth/login",
+      "POST /api/v1/auth/logout",
+      "GET /api/v1/auth/me"
+    ],
+    "catalog_reference": [
+      "GET /api/v1/catalog/destinations",
+      "GET /api/v1/catalog/profiles",
+      "GET /api/v1/catalog/metrics"
+    ],
+    "test_cases": [
+      "GET /api/v1/test-cases",
+      "POST /api/v1/test-cases",
+      "GET /api/v1/test-cases/{id}",
+      "PATCH /api/v1/test-cases/{id}",
+      "POST /api/v1/test-cases/{id}/duplicate",
+      "POST /api/v1/test-cases/{id}/archive",
+      "POST /api/v1/test-cases/{id}/unarchive",
+      "DELETE /api/v1/test-cases/{id}"
+    ],
+    "versions": [
+      "POST /api/v1/test-cases/{id}/versions",
+      "GET /api/v1/test-cases/{id}/versions",
+      "GET /api/v1/test-cases/{id}/versions/{version_id}"
+    ],
+    "scenarios": [
+      "POST /api/v1/test-cases/{id}/versions/{version_id}/scenario-template",
+      "GET /api/v1/test-cases/{id}/versions/{version_id}/scenario-template/download",
+      "POST /api/v1/test-cases/{id}/versions/{version_id}/scenarios/upload",
+      "GET /api/v1/test-cases/{id}/versions/{version_id}/scenarios",
+      "POST /api/v1/test-cases/{id}/versions/{version_id}/scenarios/reorder"
+    ],
+    "seeds_out_of_scope_for_mrb": [
+      "GET /api/v1/scenario-seeds",
+      "GET /api/v1/scenario-seeds/{slug}",
+      "GET /api/v1/test-cases/{id}/versions/{version_id}/applicable-seeds",
+      "POST /api/v1/test-cases/{id}/versions/{version_id}/apply-seed"
+    ]
+  },
+  "execution_order": [
+    "STORY-backend-route-verification-runnable-test-case-list.md",
+    "STORY-test-case-detail-version-ordered-scenarios.md",
+    "STORY-scenario-interpreter-execution-plan-preview.md",
+    "STORY-dry-run-result-mr-b-closeout.md"
+  ],
+  "stories": [
+    {
+      "order": 1,
+      "story_id": "MWR-MRB-001",
+      "file": "STORY-backend-route-verification-runnable-test-case-list.md",
+      "depends_on": [],
+      "title": "Backend Route Verification + Runnable Test Case List"
+    },
+    {
+      "order": 2,
+      "story_id": "MWR-MRB-002",
+      "file": "STORY-test-case-detail-version-ordered-scenarios.md",
+      "depends_on": [
+        "MWR-MRB-001"
+      ],
+      "title": "Test Case Detail + Version / Ordered Scenarios"
+    },
+    {
+      "order": 3,
+      "story_id": "MWR-MRB-003",
+      "file": "STORY-scenario-interpreter-execution-plan-preview.md",
+      "depends_on": [
+        "MWR-MRB-002"
+      ],
+      "title": "Scenario Interpreter + Execution Plan Preview"
+    },
+    {
+      "order": 4,
+      "story_id": "MWR-MRB-004",
+      "file": "STORY-dry-run-result-mr-b-closeout.md",
+      "depends_on": [
+        "MWR-MRB-001",
+        "MWR-MRB-002",
+        "MWR-MRB-003"
+      ],
+      "title": "Dry-run Result + MR-B Closeout"
+    }
+  ],
+  "hard_rules": [
+    "Use real backend routes or stop with BACKEND_GAP",
+    "No fake runnable data as completed behavior",
+    "No native HealthKit/Health Connect permission/write",
+    "No real-write confirmation",
+    "No full run orchestration",
+    "No backend run reporting as completed behavior",
+    "Read-only runnable data",
+    "Do not call authoring/upload/reorder/seed/admin routes as MR-B product behavior"
+  ]
+}

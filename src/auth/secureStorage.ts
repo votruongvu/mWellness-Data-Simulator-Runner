@@ -1,13 +1,14 @@
 /**
- * MR-A — Secure session storage (react-native-keychain).
+ * Secure session storage (react-native-keychain).
  *
  * ADR-MWR-006 + safety gate: tokens live ONLY in OS-backed secure storage
  * (iOS Keychain / Android Keystore via react-native-keychain). NEVER in plain
  * AsyncStorage, NEVER logged, NEVER committed. The rest of the app references
  * the token by reading it through here on demand.
  *
- * The persisted blob holds: accessToken (+ optional refreshToken), expiry, and
- * a small user reference. It is stored under a fixed service name.
+ * MR-B reconcile: the real MWDS login returns a single bearer `token` and an
+ * ISO `expires_at` (no refresh token). The persisted blob holds: `token`, the
+ * parsed `expiresAt` (epoch ms), and a small user reference (username/name/role).
  */
 
 import * as Keychain from 'react-native-keychain';
@@ -19,14 +20,15 @@ const ACCOUNT = 'mwr-session';
 /** Minimal user reference persisted alongside the token. */
 export interface StoredUserRef {
   userId: string;
-  displayName?: string;
+  username: string;
+  name: string;
+  role: string;
 }
 
 /** What we persist in secure storage. The token is the sensitive part. */
 export interface StoredSession {
-  accessToken: string;
-  refreshToken?: string;
-  /** Epoch milliseconds when the access token expires. */
+  token: string;
+  /** Epoch milliseconds when the token expires (parsed from ISO `expires_at`). */
   expiresAt: number;
   user: StoredUserRef;
 }
@@ -48,7 +50,7 @@ export async function loadSession(): Promise<StoredSession | null> {
   }
   try {
     const parsed = JSON.parse(result.password) as StoredSession;
-    if (!parsed.accessToken || typeof parsed.expiresAt !== 'number') {
+    if (!parsed.token || typeof parsed.expiresAt !== 'number') {
       return null;
     }
     return parsed;
@@ -61,7 +63,7 @@ export async function loadSession(): Promise<StoredSession | null> {
 /** Read just the bearer token (used by the API client's token provider). */
 export async function getAccessToken(): Promise<string | null> {
   const session = await loadSession();
-  return session?.accessToken ?? null;
+  return session?.token ?? null;
 }
 
 /** Clear the stored session from secure storage. */
@@ -70,6 +72,9 @@ export async function clearSession(): Promise<void> {
 }
 
 /** True if the stored expiry is in the past. */
-export function isExpired(session: StoredSession, now: number = Date.now()): boolean {
+export function isExpired(
+  session: StoredSession,
+  now: number = Date.now(),
+): boolean {
   return session.expiresAt <= now;
 }

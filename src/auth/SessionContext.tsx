@@ -28,7 +28,12 @@ import {ApiError} from '../backend/types';
 import {setTokenProvider} from '../backend/apiClient';
 import {getEnv, hasBackend} from '../config/env';
 import {redactToString} from '../shared/redaction';
-import {login as apiLogin, logout as apiLogout, me as apiMe} from './authApi';
+import {
+  login as apiLogin,
+  logout as apiLogout,
+  me as apiMe,
+  type BackendUser,
+} from './authApi';
 import {
   clearSession,
   getAccessToken,
@@ -46,8 +51,9 @@ export type SessionStatus =
 
 export interface SessionUser {
   userId: string;
-  displayName?: string;
-  email?: string;
+  username: string;
+  name: string;
+  role: string;
 }
 
 export interface SessionState {
@@ -63,13 +69,24 @@ export interface SessionContextValue extends SessionState {
   /** True if a real backend base URL is configured. */
   backendConfigured: boolean;
   restore: () => Promise<void>;
-  login: (email: string, password: string) => Promise<void>;
+  login: (username: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   /** Clear the surfaced error (e.g. on retry). */
   clearError: () => void;
+  /**
+   * Flip to the expired state from anywhere (e.g. a read screen that gets an
+   * AUTH_EXPIRED while loading). Clears the now-invalid stored session and
+   * re-routes to E01. Never used to fabricate or hide a session.
+   */
+  expireSession: () => Promise<void>;
 }
 
 const SessionContext = createContext<SessionContextValue | undefined>(undefined);
+
+/** Map a backend user to the app's session-user shape. */
+function toSessionUser(bu: BackendUser): SessionUser {
+  return {userId: bu.id, username: bu.username, name: bu.name, role: bu.role};
+}
 
 /** Dev-safe log that always redacts. No raw tokens ever reach the log. */
 function safeLog(scope: string, detail: unknown): void {
@@ -123,11 +140,7 @@ export function SessionProvider({
     // Validate the token against the backend.
     const result = await apiMe();
     if (result.ok) {
-      setUser({
-        userId: result.data.user.id,
-        displayName: result.data.user.display_name,
-        email: result.data.user.email,
-      });
+      setUser(toSessionUser(result.data.user));
       setStatus('authenticated');
       return;
     }
@@ -147,10 +160,10 @@ export function SessionProvider({
   }, [env]);
 
   const login = useCallback(
-    async (email: string, password: string) => {
+    async (username: string, password: string) => {
       setLastError(undefined);
 
-      const result = await apiLogin(email, password);
+      const result = await apiLogin(username, password);
       if (!result.ok) {
         // No fake auth. Surface the typed error (BACKEND_UNAVAILABLE if no
         // backend, AUTH_EXPIRED/VALIDATION/etc otherwise) and stay out.
@@ -160,21 +173,24 @@ export function SessionProvider({
         return;
       }
 
-      const {access_token, refresh_token, expires_in, user: bu} = result.data;
+      const {token, expires_at, user: bu} = result.data;
+      // expires_at is an ISO timestamp; parse to epoch ms. If unparseable,
+      // treat the session as already expired rather than inventing a lifetime.
+      const expiresAt = Date.parse(expires_at);
       const session: StoredSession = {
-        accessToken: access_token,
-        refreshToken: refresh_token,
-        expiresAt: Date.now() + expires_in * 1000,
-        user: {userId: bu.id, displayName: bu.display_name},
+        token,
+        expiresAt: Number.isNaN(expiresAt) ? 0 : expiresAt,
+        user: {
+          userId: bu.id,
+          username: bu.username,
+          name: bu.name,
+          role: bu.role,
+        },
       };
       // Persist ONLY to secure storage before flipping to authenticated.
       await saveSession(session);
       storedRef.current = session;
-      setUser({
-        userId: bu.id,
-        displayName: bu.display_name,
-        email: bu.email,
-      });
+      setUser(toSessionUser(bu));
       setStatus('authenticated');
     },
     [],
@@ -194,6 +210,13 @@ export function SessionProvider({
     setStatus('unauthenticated');
   }, []);
 
+  const expireSession = useCallback(async () => {
+    await clearSession();
+    storedRef.current = null;
+    setUser(undefined);
+    setStatus('expired');
+  }, []);
+
   const value = useMemo<SessionContextValue>(
     () => ({
       status,
@@ -205,8 +228,9 @@ export function SessionProvider({
       login,
       logout,
       clearError,
+      expireSession,
     }),
-    [status, user, env, lastError, restore, login, logout, clearError],
+    [status, user, env, lastError, restore, login, logout, clearError, expireSession],
   );
 
   return (
