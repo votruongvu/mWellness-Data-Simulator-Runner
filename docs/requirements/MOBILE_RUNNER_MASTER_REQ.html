@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>mWellness Mobile Runner — Master REQ v1.0</title>
+<style>
+:root{--bg:#f7f8fb;--paper:#fff;--ink:#172033;--muted:#5d6678;--line:#d9deea;--accent:#2563eb;--h2:#eef4ff;--warn:#fff7e6;--danger:#fff1f2;--ok:#ecfdf3}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.55;font-size:15px}.page{max-width:1160px;margin:32px auto;padding:0 18px 48px}.cover{background:linear-gradient(135deg,#163b8f,#2563eb 62%,#4f8cff);color:#fff;border-radius:18px;padding:38px 42px;box-shadow:0 12px 32px rgba(25,57,130,.22)}.cover h1{margin:0 0 10px;font-size:34px;line-height:1.15}.cover p{margin:6px 0;opacity:.94}.meta{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:26px}.meta div{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);padding:12px 14px;border-radius:12px}.meta strong{display:block;font-size:12px;opacity:.78;text-transform:uppercase;letter-spacing:.06em}.toc,section{background:var(--paper);border:1px solid var(--line);border-radius:16px;margin-top:18px;padding:26px 30px;box-shadow:0 6px 18px rgba(20,30,55,.05)}.toc h2,section h2{margin:-26px -30px 20px;padding:16px 30px;border-radius:16px 16px 0 0;background:var(--h2);border-bottom:1px solid var(--line);font-size:22px}h3{margin-top:28px;padding-bottom:6px;border-bottom:1px solid var(--line);font-size:18px}h4{margin-top:20px}ul,ol{margin:8px 0 14px 22px;padding:0}li{margin:4px 0}a{color:var(--accent);text-decoration:none}code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:#f3f4f6;border:1px solid #e5e7eb;border-radius:5px;padding:1px 5px;font-size:.92em}pre{overflow:auto;padding:14px 16px;background:#101827;color:#eef4ff;border-radius:12px;line-height:1.45;font-size:13px}pre code{background:transparent;border:0;color:inherit;padding:0}table{border-collapse:collapse;width:100%;margin:14px 0 20px;font-size:14px}th,td{border:1px solid var(--line);padding:9px 10px;vertical-align:top}th{background:#f1f5fb;text-align:left}.callout{padding:14px 16px;border-radius:12px;border:1px solid var(--line);margin:14px 0;background:#fbfcff}.warn{background:var(--warn);border-color:#fde68a}.danger{background:var(--danger);border-color:#fecdd3}.ok{background:var(--ok);border-color:#bbf7d0}.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}.badge{display:inline-block;border-radius:999px;padding:2px 9px;font-size:12px;font-weight:700}.p0{background:#fff1f2;color:#9f1239}.p1{background:#fff7e6;color:#9a5b00}.footer{text-align:center;color:var(--muted);margin-top:26px;font-size:13px}@media(max-width:800px){.meta,.two{grid-template-columns:1fr}.cover,section,.toc{padding:22px}.toc h2,section h2{margin:-22px -22px 18px;padding:14px 22px}}
+</style>
+</head>
+<body>
+<div class="page">
+<div class="cover">
+<h1>mWellness Mobile Runner<br/>Master Requirements Specification</h1>
+<p><strong>Document ID:</strong> MWR-MASTER-REQ-v1.0</p>
+<p><strong>Purpose:</strong> Canonical requirements baseline for creating a dedicated Claude Framework and repository for the mobile runner.</p>
+<p><strong>Primary Scope:</strong> React Native mobile runtime that authenticates users, loads runnable test cases/scenarios from MWDS backend, prepares execution plans, writes/simulates wellness data via Apple Health / Health Connect, and reports run results.</p>
+<div class="meta">
+<div><strong>Version</strong>1.0</div><div><strong>Status</strong>Draft for Framework Bootstrap</div><div><strong>Target Repo</strong>mWellness-Mobile-Runner</div><div><strong>Upstream</strong>mWellness-Data-Simulator</div>
+</div></div>
+
+<div class="toc"><h2>Table of Contents</h2>
+<ol>
+<li><a href="#summary">Executive Summary</a></li><li><a href="#boundary">Product Boundary</a></li><li><a href="#context">System Context</a></li><li><a href="#scope">Scope and Non-Scope</a></li><li><a href="#architecture">Target Architecture</a></li><li><a href="#domain">Domain Model</a></li><li><a href="#functional">Functional Requirements</a></li><li><a href="#platform">Platform Requirements</a></li><li><a href="#api">Backend API Requirements</a></li><li><a href="#contracts">Data Contracts</a></li><li><a href="#safety">Security, Privacy, Safety</a></li><li><a href="#ux">UX Requirements</a></li><li><a href="#testing">Testing and QA</a></li><li><a href="#roadmap">Roadmap</a></li><li><a href="#framework">Claude Framework Requirements</a></li><li><a href="#risks">Risks and Open Questions</a></li><li><a href="#acceptance">Master Acceptance Criteria</a></li>
+</ol></div>
+
+<section id="summary"><h2>1. Executive Summary</h2>
+<p><strong>mWellness Mobile Runner</strong> is a dedicated mobile runtime for executing validated wellness test scenarios authored and managed by the upstream <code>mWellness-Data-Simulator</code> Web App and Backend.</p>
+<p>The mobile app is not the authoring system. It authenticates the user, fetches test cases and selected test case versions from backend APIs, loads ordered concrete scenarios, prepares a platform-specific execution plan, requests explicit permissions, writes or simulates supported wellness data through Apple Health or Health Connect, and reports execution results.</p>
+<div class="callout warn"><strong>Primary direction:</strong> Mobile loads runnable data directly from backend APIs after login. Exported bundles can be optional later, but they are not the primary mobile runner data source.</div>
+<div class="callout danger"><strong>Safety rule:</strong> The runner must never silently write health data. Real writes require environment gating, capability checks, permission checks, dry-run preview, and user confirmation.</div>
+</section>
+
+<section id="boundary"><h2>2. Product Boundary</h2>
+<table>
+<tr><th>Item</th><th>Definition</th></tr>
+<tr><td>Product</td><td>mWellness Mobile Runner</td></tr>
+<tr><td>Repository</td><td><code>mWellness-Mobile-Runner</code></td></tr>
+<tr><td>Primary stack</td><td>React Native + TypeScript + native iOS/Android modules</td></tr>
+<tr><td>Upstream</td><td><code>mWellness-Data-Simulator</code> Web App + Go Backend</td></tr>
+<tr><td>Users</td><td>Internal DEV/QA testers, mobile developers, backend developers, QA leads</td></tr>
+</table>
+<div class="two">
+<div class="callout ok"><strong>Mobile owns</strong><ul><li>Login/session on mobile</li><li>Runnable test case loading</li><li>Scenario loading and interpretation</li><li>Execution plan generation</li><li>Platform capability checks</li><li>Health permission flow</li><li>HealthKit / Health Connect writer adapters</li><li>Dry-run and write safety gates</li><li>Run progress and result reporting</li></ul></div>
+<div class="callout warn"><strong>Mobile does not own</strong><ul><li>Catalog source of truth</li><li>Scenario validation authority</li><li>Test case authoring</li><li>Versioning and scenario ordering authority</li><li>Scenario seed library and applicability</li><li>RBAC/tenant/billing/admin</li><li>Google Fit or vendor SDK integrations unless approved</li></ul></div>
+</div>
+</section>
+
+<section id="context"><h2>3. System Context</h2>
+<pre><code>MWDS Web App/Backend
+  - Auth
+  - Catalog and metrics
+  - Test cases and versions
+  - Ordered scenarios
+  - Scenario validation
+  - Optional run reporting
+        |
+        | HTTPS + authenticated APIs
+        v
+mWellness Mobile Runner
+  - Login/session
+  - Fetch runnable data
+  - Build execution plan
+  - Dry-run preview
+  - Request permissions
+  - Execute writes
+  - Report results
+        |
+        +--> iOS HealthKit / Apple Health
+        +--> Android Health Connect</code></pre>
+<h3>Primary Flow</h3>
+<ol><li>User logs in.</li><li>Mobile fetches runnable test cases.</li><li>User selects test case and version.</li><li>Mobile loads ordered scenarios and metric metadata.</li><li>Mobile checks platform support and permissions.</li><li>Mobile builds execution plan.</li><li>User runs dry-run and confirms real write if enabled.</li><li>Mobile writes/simulates data.</li><li>Mobile shows and optionally reports run result.</li></ol>
+</section>
+
+<section id="scope"><h2>4. Scope and Non-Scope</h2>
+<h3>In Scope</h3>
+<ul><li>Dedicated mobile repo and Claude Framework.</li><li>React Native mobile app foundation.</li><li>Auth/session and secure storage.</li><li>Backend API client.</li><li>Test case browser and scenario loader.</li><li>Scenario interpreter and execution plan builder.</li><li>Dry-run mode.</li><li>Apple Health writer POC and hardening.</li><li>Health Connect writer POC and hardening.</li><li>Run orchestration, progress, result reporting.</li><li>Diagnostics and QA tooling.</li></ul>
+<h3>Out of Scope</h3>
+<ul><li>Web App authoring features.</li><li>Catalog/test case/scenario seed editing on mobile.</li><li>Scenario Seed Library and Applicability.</li><li>Mobile as a full scenario editor.</li><li>Billing, tenant, RBAC, admin, SaaS control plane.</li><li>Google Fit.</li><li>Direct vendor SDKs unless approved.</li><li>Background autonomous writes.</li><li>Silent health data writes.</li><li>Production consumer release without later review.</li></ul>
+</section>
+
+<section id="architecture"><h2>5. Target Architecture</h2>
+<table><tr><th>Layer</th><th>Recommendation</th><th>Notes</th></tr>
+<tr><td>App</td><td>React Native + TypeScript</td><td>Dedicated mobile repository.</td></tr>
+<tr><td>iOS native</td><td>Swift module</td><td>HealthKit capability/permission/write adapter.</td></tr>
+<tr><td>Android native</td><td>Kotlin module</td><td>Health Connect capability/permission/write adapter.</td></tr>
+<tr><td>Server state</td><td>TanStack Query or equivalent</td><td>Fetch/cache backend data.</td></tr>
+<tr><td>Secure storage</td><td>Keychain/Keystore-backed</td><td>For persistent session material if used.</td></tr>
+<tr><td>Logging</td><td>Structured local logs</td><td>No tokens; raw scenario payloads dev-gated only.</td></tr></table>
+<pre><code>src/
+  auth/
+  backend/
+  catalog/
+  testCases/
+  runner/
+    interpreter/
+    executionPlan/
+    runState/
+  health/
+    common/
+    appleHealth/
+    healthConnect/
+  safety/
+  diagnostics/
+  shared/</code></pre>
+<p>UI must not call native writers directly. Native writers implement a common interface and are reachable only after safety gates pass.</p>
+</section>
+
+<section id="domain"><h2>6. Domain Model</h2>
+<table>
+<tr><th>Object</th><th>Description</th><th>Owner</th></tr>
+<tr><td>UserSession</td><td>Authenticated mobile session.</td><td>Mobile/Auth + Backend</td></tr>
+<tr><td>RunnableTestCase</td><td>Backend-provided runnable test case summary.</td><td>Backend</td></tr>
+<tr><td>RunnableTestCaseVersion</td><td>Immutable version configuration snapshot.</td><td>Backend</td></tr>
+<tr><td>RunnableScenario</td><td>Concrete ordered scenario attached to a version.</td><td>Backend</td></tr>
+<tr><td>MetricDefinition</td><td>Metric metadata, unit, data shape, platform support.</td><td>Backend Catalog</td></tr>
+<tr><td>PlatformCapability</td><td>Local platform availability and write support.</td><td>Mobile</td></tr>
+<tr><td>PermissionState</td><td>OS permission state per platform/metric type.</td><td>Mobile/OS</td></tr>
+<tr><td>ExecutionPlan</td><td>Planned write/simulate operations.</td><td>Mobile</td></tr>
+<tr><td>RunSession</td><td>Local runtime state for selected version/scenario set.</td><td>Mobile</td></tr>
+<tr><td>RunResult</td><td>Run success/failure/skipped summary.</td><td>Mobile, optional Backend report</td></tr>
+</table>
+<pre><code>SELECT_TEST_CASE -> LOAD_VERSION -> LOAD_SCENARIOS
+-> LOAD_METRIC_METADATA -> CHECK_CAPABILITY -> CHECK_PERMISSIONS
+-> BUILD_PLAN -> DRY_RUN -> CONFIRM_REAL_WRITE
+-> EXECUTE -> COLLECT_RESULTS -> REPORT_RESULT -> COMPLETE</code></pre>
+</section>
+
+<section id="functional"><h2>7. Functional Requirements</h2>
+<h3>Authentication</h3>
+<table><tr><th>ID</th><th>Requirement</th><th>Acceptance</th></tr>
+<tr><td>MR-AUTH-001</td><td>User can log in using MWDS backend credentials/session flow.</td><td>Valid user reaches protected screens.</td></tr>
+<tr><td>MR-AUTH-002</td><td>Persistent token/session material uses secure storage.</td><td>No raw tokens in plain storage or logs.</td></tr>
+<tr><td>MR-AUTH-003</td><td>Expired sessions are handled clearly.</td><td>Refresh or re-login flow works.</td></tr>
+<tr><td>MR-AUTH-004</td><td>Logout clears local session state.</td><td>Protected data unavailable after logout.</td></tr></table>
+<h3>Test Case and Scenario Loading</h3>
+<table><tr><th>ID</th><th>Requirement</th><th>Acceptance</th></tr>
+<tr><td>MR-TC-001</td><td>Fetch runnable test cases for authenticated user.</td><td>List uses real backend API.</td></tr>
+<tr><td>MR-TC-002</td><td>Show test case summary and latest/current version.</td><td>User can select runnable target.</td></tr>
+<tr><td>MR-TC-003</td><td>Load selected version config snapshot.</td><td>Destination/profiles/metrics visible.</td></tr>
+<tr><td>MR-TC-004</td><td>Load ordered scenarios for selected version.</td><td>Order matches backend.</td></tr>
+<tr><td>MR-TC-005</td><td>Do not locally mutate version or scenario order.</td><td>Mobile is runner, not authoring authority.</td></tr></table>
+<h3>Scenario Interpretation and Execution Plan</h3>
+<table><tr><th>ID</th><th>Requirement</th><th>Acceptance</th></tr>
+<tr><td>MR-PLAN-001</td><td>Parse validated scenario payloads into internal runner models.</td><td>Invalid payload blocks run with reason.</td></tr>
+<tr><td>MR-PLAN-002</td><td>Resolve relative time model to absolute timestamps.</td><td>Planned operations have concrete timestamps.</td></tr>
+<tr><td>MR-PLAN-003</td><td>Classify each operation: writable, unsupported, permission_missing, invalid, skipped.</td><td>Blocked operations visible before run.</td></tr>
+<tr><td>MR-PLAN-004</td><td>Support dry-run mode without native write.</td><td>Dry-run produces plan/result without writing.</td></tr></table>
+<h3>Run Execution</h3>
+<table><tr><th>ID</th><th>Requirement</th><th>Acceptance</th></tr>
+<tr><td>MR-RUN-001</td><td>Real write requires explicit confirmation.</td><td>No accidental write from list/detail.</td></tr>
+<tr><td>MR-RUN-002</td><td>Execute writable operations through platform writer adapter.</td><td>Native adapter receives only approved operations.</td></tr>
+<tr><td>MR-RUN-003</td><td>Show run progress by scenario/metric.</td><td>User sees completed/failed/skipped operations.</td></tr>
+<tr><td>MR-RUN-004</td><td>Generate run result summary.</td><td>Success/failure/skipped counts and reasons visible.</td></tr></table>
+</section>
+
+<section id="platform"><h2>8. Platform Requirements</h2>
+<h3>Apple Health / HealthKit</h3>
+<table><tr><th>ID</th><th>Requirement</th></tr>
+<tr><td>MR-IOS-001</td><td>Check HealthKit availability before permission request.</td></tr>
+<tr><td>MR-IOS-002</td><td>Request permissions only after explanatory user action.</td></tr>
+<tr><td>MR-IOS-003</td><td>Map supported metrics to HealthKit quantity/category/workout types.</td></tr>
+<tr><td>MR-IOS-004</td><td>Never report success unless native HealthKit write succeeds.</td></tr>
+<tr><td>MR-IOS-005</td><td>Expose permission denied/partial states clearly.</td></tr>
+</table>
+<h3>Health Connect</h3>
+<table><tr><th>ID</th><th>Requirement</th></tr>
+<tr><td>MR-AND-001</td><td>Check Health Connect availability/installation state.</td></tr>
+<tr><td>MR-AND-002</td><td>Request permissions only after explanatory user action.</td></tr>
+<tr><td>MR-AND-003</td><td>Map supported metrics to Health Connect record types.</td></tr>
+<tr><td>MR-AND-004</td><td>Never report success unless native Health Connect insert succeeds.</td></tr>
+<tr><td>MR-AND-005</td><td>Handle OS/API/version availability differences gracefully.</td></tr>
+</table>
+<p>Exact metric write support must be verified in MR0/MR3/MR4/MR5. The framework must not assume every catalog metric is writable.</p>
+</section>
+
+<section id="api"><h2>9. Backend API Requirements</h2>
+<table><tr><th>Capability</th><th>Expected Shape</th><th>Notes</th></tr>
+<tr><td>Login/session</td><td><code>POST /api/v1/auth/login</code> and refresh/logout/me equivalents</td><td>Exact routes follow MWDS.</td></tr>
+<tr><td>Runnable test cases</td><td><code>GET /api/v1/mobile/test-cases</code> or compatible existing route</td><td>May reuse existing API.</td></tr>
+<tr><td>Version detail</td><td><code>GET /api/v1/test-cases/{id}/versions/{version_id}</code></td><td>Includes config snapshot.</td></tr>
+<tr><td>Ordered scenarios</td><td><code>GET /api/v1/test-cases/{id}/versions/{version_id}/scenarios</code></td><td>Backend order authoritative.</td></tr>
+<tr><td>Scenario content</td><td>Existing scenario content/detail endpoint</td><td>Concrete payloads required.</td></tr>
+<tr><td>Metric metadata</td><td>Catalog metric API</td><td>Unit/data_shape/platform support required.</td></tr>
+<tr><td>Run reporting</td><td><code>POST /api/v1/mobile/runs</code> or equivalent</td><td>Recommended by MR6.</td></tr></table>
+<p>If required backend APIs are missing, the mobile framework must document the gap and stop for human approval before creating fake local data.</p>
+</section>
+
+<section id="contracts"><h2>10. Data Contracts</h2>
+<h3>Runnable Test Case Summary</h3>
+<pre><code>{
+  "test_case_id": "uuid",
+  "test_case_slug": "active-day-basic",
+  "name": "Active Day Basic",
+  "status": "active",
+  "latest_version": {
+    "version_id": "uuid",
+    "version_number": 3,
+    "is_current": true,
+    "destination_slug": "apple_health",
+    "profile_slugs": ["apple_watch"],
+    "metric_slugs": ["steps", "heart_rate"],
+    "scenario_count": 4,
+    "validation_status": "valid"
+  }
+}</code></pre>
+<h3>Runnable Scenario</h3>
+<pre><code>{
+  "scenario_id": "uuid",
+  "scenario_slug": "poor_sleep_recovery_day",
+  "scenario_name": "Poor Sleep Recovery Day",
+  "order_index": 1,
+  "validation_status": "valid",
+  "metric_slugs": ["sleep_duration", "heart_rate_variability"],
+  "content_url": "/api/v1/scenarios/{id}/content"
+}</code></pre>
+<h3>Execution Plan</h3>
+<pre><code>{
+  "run_id": "local-uuid",
+  "mode": "dry_run",
+  "platform": "ios",
+  "destination_slug": "apple_health",
+  "operations": [
+    {
+      "operation_id": "local-op-1",
+      "scenario_id": "uuid",
+      "metric_slug": "heart_rate",
+      "status": "writable",
+      "target_type": "healthkit.quantity.heart_rate",
+      "timestamp": "2026-06-27T10:00:00Z",
+      "value": 92,
+      "unit": "count/min"
+    }
+  ],
+  "blocked_operations": [
+    {
+      "metric_slug": "recovery_score",
+      "status": "unsupported",
+      "reason_code": "METRIC_NOT_WRITABLE_ON_PLATFORM"
+    }
+  ]
+}</code></pre>
+<h3>Run Result</h3>
+<pre><code>{
+  "run_id": "local-uuid",
+  "mode": "real_write",
+  "platform": "ios",
+  "summary": {
+    "total_operations": 28,
+    "succeeded": 25,
+    "failed": 1,
+    "skipped": 2
+  },
+  "errors": [
+    {
+      "operation_id": "local-op-9",
+      "metric_slug": "sleep_stage_deep",
+      "reason_code": "NATIVE_WRITE_FAILED"
+    }
+  ]
+}</code></pre>
+</section>
+
+<section id="safety"><h2>11. Security, Privacy, and Safety</h2>
+<table><tr><th>ID</th><th>Requirement</th><th>Acceptance</th></tr>
+<tr><td>MR-SEC-001</td><td>Tokens and credentials must not be logged.</td><td>Redaction checks exist.</td></tr>
+<tr><td>MR-SEC-002</td><td>Persistent tokens use secure storage.</td><td>No raw token in plain storage.</td></tr>
+<tr><td>MR-SEC-003</td><td>Mobile must not bypass backend ownership checks.</td><td>Runnable data comes from authenticated API.</td></tr>
+<tr><td>MR-SAFE-001</td><td>Dry-run exists before real-write.</td><td>Plan can be previewed without writes.</td></tr>
+<tr><td>MR-SAFE-002</td><td>Real write requires explicit confirmation.</td><td>No accidental writes.</td></tr>
+<tr><td>MR-SAFE-003</td><td>Unsupported metrics are blocked/skipped with reason.</td><td>No silent ignore.</td></tr>
+<tr><td>MR-SAFE-004</td><td>Native write success must reflect actual platform result.</td><td>No fake success.</td></tr>
+</table>
+<div class="callout danger"><strong>Claude guardrail:</strong> Any task that writes to Apple Health or Health Connect must include permission, capability, dry-run, confirmation, and no-fake-success checks. If any are missing, the task is blocked.</div>
+</section>
+
+<section id="ux"><h2>12. Mobile UX Requirements</h2>
+<ul><li>Login screen</li><li>Environment/status screen</li><li>Test case list</li><li>Test case detail</li><li>Version/scenario list</li><li>Execution plan preview</li><li>Permission/capability check screen</li><li>Run confirmation screen</li><li>Run progress screen</li><li>Run result screen</li><li>DEV diagnostics screen</li></ul>
+<p>UX must make target platform and run mode obvious. Dry-run vs real-write must be visible throughout the run flow. Permission prompts must be explained before native OS prompts appear.</p>
+</section>
+
+<section id="testing"><h2>13. Testing and QA</h2>
+<table><tr><th>Category</th><th>Coverage</th></tr>
+<tr><td>Unit</td><td>Scenario interpretation, time model resolution, plan builder, capability classification.</td></tr>
+<tr><td>Component</td><td>Screen states, confirmation gates, permission states, errors.</td></tr>
+<tr><td>API integration</td><td>Auth, test case fetch, version/scenario fetch, error handling.</td></tr>
+<tr><td>Native adapter</td><td>Capability, permission, write success/failure mapping where feasible.</td></tr>
+<tr><td>Manual QA</td><td>Real iOS/Android devices, dry-run, permissions, write POC, result verification.</td></tr></table>
+<p><strong>No-fake-success rule:</strong> writer POCs must include negative verification that denied/failed native writes are not reported as success.</p>
+</section>
+
+<section id="roadmap"><h2>14. Recommended Mobile Runner Roadmap</h2>
+<table><tr><th>Phase</th><th>Name</th><th>Purpose</th></tr>
+<tr><td>MR-FRAMEWORK-00</td><td>Claude Framework Bootstrap</td><td>Dedicated mobile framework, guardrails, context, commands.</td></tr>
+<tr><td>MR0</td><td>Mobile Runner Contract Alignment</td><td>Backend/mobile/native contracts and safety gates.</td></tr>
+<tr><td>MR1</td><td>Mobile Foundation / Auth / API Client</td><td>App shell, auth, backend client, config.</td></tr>
+<tr><td>MR2</td><td>Test Case Browser + Scenario Loader</td><td>Fetch runnable test cases, versions, ordered scenarios.</td></tr>
+<tr><td>MR3</td><td>Scenario Interpreter + Execution Plan</td><td>Parse scenarios and build dry-run plan.</td></tr>
+<tr><td>MR4</td><td>Apple Health Writer POC</td><td>HealthKit permission/capability/write POC.</td></tr>
+<tr><td>MR5</td><td>Health Connect Writer POC</td><td>Health Connect permission/capability/write POC.</td></tr>
+<tr><td>MR6</td><td>Run Orchestration + Result Reporting</td><td>Run ordered scenarios, progress, result/reporting.</td></tr>
+<tr><td>MR7</td><td>Safety QA / Release Candidate</td><td>Hardening, QA matrix, diagnostics, RC docs.</td></tr></table>
+</section>
+
+<section id="framework"><h2>15. Claude Framework Requirements</h2>
+<h3>Required context files</h3>
+<ul><li><code>CLAUDE.md</code></li><li><code>.claude/commands/run-phase-loop.md</code></li><li><code>.claude-framework/adapter/current-decisions.md</code></li><li><code>.claude-framework/adapter/known-risks.md</code></li><li><code>.claude-framework/adapter/source-of-truth.md</code></li><li><code>.claude-framework/adapter/human-approval-gates.md</code></li><li><code>docs/requirements/MOBILE_RUNNER_MASTER_REQ.md</code></li><li><code>docs/safety/MOBILE_HEALTH_WRITE_SAFETY.md</code></li><li><code>docs/contracts/MOBILE_BACKEND_API_CONTRACT.md</code></li><li><code>docs/contracts/MOBILE_SCENARIO_EXECUTION_MODEL.md</code></li></ul>
+<h3>Mandatory guardrails</h3>
+<div class="callout danger"><ul><li>No accidental health data writes.</li><li>No real write without dry-run, permission check, capability check, and confirmation.</li><li>No fake native write success.</li><li>No silent HealthKit / Health Connect permission prompt.</li><li>No Google Fit.</li><li>No vendor SDK unless approved.</li><li>No backend authority bypass.</li><li>No mock test cases/scenarios marked as complete product behavior.</li><li>No raw token/log leakage.</li><li>No unsupported metric silently ignored.</li></ul></div>
+<p>Phase loop must execute story-by-story, commit per story, validate per story, prepare close-task-style phase review, and stop for human classification before continuing.</p>
+</section>
+
+<section id="risks"><h2>16. Risks and Open Questions</h2>
+<table><tr><th>ID</th><th>Risk</th><th>Severity</th><th>Mitigation</th></tr>
+<tr><td>MR-RISK-001</td><td>Accidental real health writes.</td><td><span class="badge p0">P0</span></td><td>Dry-run, confirmation, safety gates.</td></tr>
+<tr><td>MR-RISK-002</td><td>Fake native write success.</td><td><span class="badge p0">P0</span></td><td>No-fake-success tests.</td></tr>
+<tr><td>MR-RISK-003</td><td>Mobile duplicates backend authoring logic.</td><td><span class="badge p1">P1</span></td><td>Backend remains source of truth.</td></tr>
+<tr><td>MR-RISK-004</td><td>Metric support differs by platform.</td><td><span class="badge p1">P1</span></td><td>MR0 mapping contract and capability checks.</td></tr>
+<tr><td>MR-RISK-005</td><td>Tokens/raw payloads leak through logs.</td><td><span class="badge p0">P0</span></td><td>Redaction and dev-gated diagnostics.</td></tr></table>
+<h3>Open Questions</h3>
+<ol><li>Which exact backend endpoints will mobile use?</li><li>What token refresh/storage strategy is approved?</li><li>Which metrics are truly writable on iOS HealthKit for POC?</li><li>Which metrics are truly writable on Android Health Connect for POC?</li><li>Should run reporting be added to backend before MR6?</li><li>Should real-write mode require DEV build flag, environment flag, or both?</li><li>Should mobile run one scenario, whole ordered list, or both?</li><li>What real devices/OS versions are required for QA?</li></ol>
+</section>
+
+<section id="acceptance"><h2>17. Master Acceptance Criteria</h2>
+<ul><li>Dedicated mobile repo has Claude Framework with mobile-native guardrails.</li><li>Master REQ is copied/converted into canonical repo docs.</li><li>Source of truth states MWDS backend is upstream authority.</li><li>Known risks include native write safety, permission, metric mapping, token storage, and no-fake-success.</li><li>MR0 locks backend/mobile/native contracts before product implementation.</li><li>MR3 dry-run execution plan exists before MR4/MR5 real writer POCs.</li><li>No native writer phase is done if it fakes write success.</li><li>No real-write flow is done without dry-run, capability check, permission check, and explicit confirmation.</li><li>No release candidate is production-ready without separate security/privacy review.</li></ul>
+</section>
+
+<div class="footer">mWellness Mobile Runner — Master REQ v1.0 · Generated for Claude Framework Bootstrap</div>
+</div>
+</body>
+</html>

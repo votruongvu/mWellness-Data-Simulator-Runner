@@ -1,0 +1,12 @@
+# OS / editor cruft
+.DS_Store
+__MACOSX/
+._*
+*.swp
+Thumbs.db
+
+# Claude Code runtime state (machine-local)
+.claude/state/*
+!.claude/state/.gitignore
+
+# (No React Native app is scaffolded yet — language/build ignores are added at MR1.)
