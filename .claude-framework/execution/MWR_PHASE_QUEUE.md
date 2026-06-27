@@ -19,11 +19,13 @@ Legend: **AUTO-RUN** = the loop may execute safe, in-scope work without a hard
 human-approval gate (scope + gates.md still enforced). **HARD GATE** = STOP for
 explicit human approval before starting (see `MWR_HUMAN_APPROVAL_GATES.md`).
 
-> **STATUS (2026-06-27 — BOOTSTRAP):** `MR-FRAMEWORK-00` is the current phase
-> (framework/docs authoring). No product code, no React Native app, no native
-> substrate, and no product stories exist yet. The first product phase `MR0` is
-> **hard-gated** (it locks contracts and creates ADRs). Live status =
-> `MWR_EXECUTION_STATE.md`.
+> **STATUS (2026-06-27):** `MR-FRAMEWORK-00` (framework bootstrap) and
+> `MR-DESIGN-00` (design handoff normalization) are **complete**;
+> `MR-FRAMEWORK-01` (context completeness & MR0 readiness) is the **current
+> phase**. All three are framework/design/docs phases — no product code, no
+> React Native app, no native substrate, no product stories exist yet. The first
+> product phase `MR0` is **hard-gated** (it locks contracts and creates ADRs).
+> Live status = `MWR_EXECUTION_STATE.md`.
 
 ## CRITICAL ordering constraints (REQ §17 — binding)
 
@@ -56,6 +58,36 @@ Mobile Runner Master REQ.
 **Completion:** the framework manifest is fully authored,
 `validate-framework.sh` PASS, and `validate_context_pack_paths.py` PASS. Then
 set `CURRENT_PHASE_STATUS = DONE` and STOP at the MR0 hard gate.
+
+---
+
+## MR-DESIGN-00 — Design Handoff Normalization — **AUTO-RUN** *(complete)*
+
+**Scope:** normalize the accepted Claude Designer package into implementation-ready
+design artifacts under `artifacts/design/mobile-runner/` (screen map, E2E flows,
+component kit, state matrix, safety UX matrix, implementation handoff, closeout).
+Design/docs only.
+
+**Scope rules:** design/docs only · **no product code / RN scaffold / backend /
+native write** · design is **UI/UX implementation input, subordinate to the Master
+REQ** · environment UX stays lightweight · `profile` = device/source profile ·
+Apple Health/HealthKit/iOS + Health Connect/Android terminology · iOS + Android
+happy paths · safety gates mandatory · no authoring/catalog/seed/upload/reorder/
+export-bundle/Google Fit/RBAC scope. **Must be approved before any implementation
+phase (MR1+) begins.**
+
+---
+
+## MR-FRAMEWORK-01 — Context Completeness & MR0 Readiness — **AUTO-RUN** *(current)*
+
+**Scope:** audit context completeness after MR-FRAMEWORK-00 + MR-DESIGN-00 —
+source-of-truth/legacy contamination, safety gates, roadmap/phase-queue alignment,
+design-handoff readiness, MR0 contract readiness — and produce the device QA
+matrix and closeout. Framework/readiness/docs only.
+
+**Scope rules:** readiness/docs only · **no product code / RN scaffold / backend /
+native write** · **no MR0/MR1 stories** · Master REQ stays canonical · design stays
+subordinate · old DM1 truth legacy-only · safety gates not weakened.
 
 ---
 

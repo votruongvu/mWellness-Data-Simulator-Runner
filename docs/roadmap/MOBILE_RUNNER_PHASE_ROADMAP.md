@@ -72,3 +72,4 @@ gates halt the loop regardless of task budget.
 - Backend contract (the MR0 alignment surface): [`../contracts/MOBILE_BACKEND_API_CONTRACT.md`](../contracts/MOBILE_BACKEND_API_CONTRACT.md)
 - Health-write safety (governs MR4/MR5): [`../safety/MOBILE_HEALTH_WRITE_SAFETY.md`](../safety/MOBILE_HEALTH_WRITE_SAFETY.md)
 - Phase queue (execution layer): `.claude-framework/execution/MWR_PHASE_QUEUE.md`
+- Device QA matrix (gates MR4/MR5 real-write POC approval): [`../platform/MWR_DEVICE_QA_MATRIX.md`](../platform/MWR_DEVICE_QA_MATRIX.md)

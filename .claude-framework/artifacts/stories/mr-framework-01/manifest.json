@@ -1,0 +1,98 @@
+{
+  "project": "mWellness-Mobile-Runner",
+  "phase": "MR-FRAMEWORK-01",
+  "phase_name": "Context Completeness & MR0 Readiness",
+  "target_import_path": "artifacts/stories/mr-framework-01/",
+  "story_count": 7,
+  "execution_order": [
+    "STORY-audit-source-of-truth-and-legacy-contamination.md",
+    "STORY-audit-mobile-safety-gates-and-human-approval.md",
+    "STORY-audit-roadmap-phase-queue-and-design-placement.md",
+    "STORY-audit-design-handoff-readiness.md",
+    "STORY-audit-backend-api-and-contract-readiness-for-mr0.md",
+    "STORY-create-device-qa-matrix-placeholder.md",
+    "STORY-validate-framework-context-and-close-mr-framework-01.md"
+  ],
+  "stories": [
+    {
+      "order": 1,
+      "story_id": "MWR-FW1-001",
+      "file": "STORY-audit-source-of-truth-and-legacy-contamination.md",
+      "depends_on": [],
+      "title": "Audit source of truth and legacy contamination"
+    },
+    {
+      "order": 2,
+      "story_id": "MWR-FW1-002",
+      "file": "STORY-audit-mobile-safety-gates-and-human-approval.md",
+      "depends_on": [
+        "MWR-FW1-001"
+      ],
+      "title": "Audit mobile safety gates and human approval"
+    },
+    {
+      "order": 3,
+      "story_id": "MWR-FW1-003",
+      "file": "STORY-audit-roadmap-phase-queue-and-design-placement.md",
+      "depends_on": [
+        "MWR-FW1-001"
+      ],
+      "title": "Audit roadmap phase queue and design placement"
+    },
+    {
+      "order": 4,
+      "story_id": "MWR-FW1-004",
+      "file": "STORY-audit-design-handoff-readiness.md",
+      "depends_on": [
+        "MWR-FW1-001",
+        "MWR-FW1-003"
+      ],
+      "title": "Audit design handoff readiness"
+    },
+    {
+      "order": 5,
+      "story_id": "MWR-FW1-005",
+      "file": "STORY-audit-backend-api-and-contract-readiness-for-mr0.md",
+      "depends_on": [
+        "MWR-FW1-001",
+        "MWR-FW1-004"
+      ],
+      "title": "Audit backend API and contract readiness for MR0"
+    },
+    {
+      "order": 6,
+      "story_id": "MWR-FW1-006",
+      "file": "STORY-create-device-qa-matrix-placeholder.md",
+      "depends_on": [
+        "MWR-FW1-002",
+        "MWR-FW1-005"
+      ],
+      "title": "Create device QA matrix placeholder"
+    },
+    {
+      "order": 7,
+      "story_id": "MWR-FW1-007",
+      "file": "STORY-validate-framework-context-and-close-mr-framework-01.md",
+      "depends_on": [
+        "MWR-FW1-001",
+        "MWR-FW1-002",
+        "MWR-FW1-003",
+        "MWR-FW1-004",
+        "MWR-FW1-005",
+        "MWR-FW1-006"
+      ],
+      "title": "Validate framework context and close MR-FRAMEWORK-01"
+    }
+  ],
+  "hard_rules": [
+    "Framework/readiness/docs-only",
+    "Master REQ remains canonical",
+    "Design is subordinate UI/UX input",
+    "Old DM1/app truth is legacy/superseded only",
+    "No product code",
+    "No React Native scaffold",
+    "No backend API implementation",
+    "No native write implementation",
+    "No MR0/MR1/later stories"
+  ]
+}
