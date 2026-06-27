@@ -78,3 +78,18 @@ After all stories are complete:
 - confirm no product/native write code changed
 - classify readiness for MR-FRAMEWORK-01
 - stop for human review
+
+## Execution Status (run-phase-loop, 2026-06-27, branch mr-framework-00-stories)
+
+| Order | Story ID | Commit | Status |
+|---:|---|---|---|
+| 01 | MWR-FW-001 | `d9ea660` | DONE |
+| 02 | MWR-FW-002 | `77c733d` | DONE |
+| 03 | MWR-FW-003 | `9b966da` | DONE |
+| 04 | MWR-FW-004 | `6f4f907` | DONE |
+| 05 | MWR-FW-005 | `503ea31` | DONE |
+| 06 | MWR-FW-006 | `3df3751` | DONE |
+| 07 | MWR-FW-007 | (closeout commit) | DONE |
+
+Phase result: **all 7 stories DONE**. Loop stops here for human review before the next phase
+(MR-FRAMEWORK-01 already executed on `main`; next product-bearing phase is MR0, a hard human-approval gate).
