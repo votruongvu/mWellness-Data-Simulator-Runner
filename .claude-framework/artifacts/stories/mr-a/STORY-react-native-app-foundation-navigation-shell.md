@@ -4,7 +4,7 @@ phase: MR-A
 order: 2
 title: "React Native App Foundation + Navigation Shell"
 depends_on: ["MWR-MRA-001"]
-status: ready
+status: done
 ---
 
 # MWR-MRA-002 — React Native App Foundation + Navigation Shell
@@ -116,3 +116,15 @@ Commit body must include story path, summary, validation results, non-goals pres
 ## Closeout Requirements
 
 Return story closeout with status, commit hash, files changed, capability impact, validation results, and P0/P1/P2 followups.
+
+---
+
+## Execution Record — MR-A phase loop
+- **Executed:** 2026-06-27 · branch `main`. **Status:** DONE.
+- **Deliverable:** RN foundation — `package.json`/`tsconfig`/`babel`/`metro`/`jest`/eslint/prettier/`index.js`/`app.json`/`App.tsx`; `src/navigation/` (RootNavigator + types, auth vs app stack from session); `src/shared/` (theme + EnvBadge/SafetyBanner/StatusBadge/PrimaryButton); `src/config/env.ts` (base-URL seam, default null = no backend; lightweight env badge); `src/screens/Splash` + `Login`; `__tests__/smoke.test.tsx`; `docs/platform/MWR_APP_FOUNDATION_SETUP.md`; `.gitignore` RN ignores. ADR ratified: **ADR-MWR-010** (RN CLI 0.74.5 + TS strict + React Navigation v6 + react-native-keychain).
+- **Build:** `npm install`/`pod install`/native build/typecheck **NOT run** (no toolchain/network here) — documented in the setup doc; iOS/Android native projects generated from the RN 0.74.5 template at setup.
+- **Gates:** #9 (RN baseline ADR + native substrate) human-approved at MR-A.
+- **Validation:** `validate-framework.sh` PASS; markdown/links OK.
+- **Non-goals preserved:** lightweight env (no local/dev/staging/prod UX); no test-case browser/execution-plan/dry-run/permission/native-write; no Google Fit/vendor/RBAC.
+- **Note:** per-story commits are additive layers — `App.tsx`/`RootNavigator` reference the auth (003) + dashboard/error (004) modules added later in the phase.
+- **Followups:** P2 — run `npm install` + native build on a toolchained machine to verify the foundation compiles/runs.

@@ -9,4 +9,13 @@ Thumbs.db
 .claude/state/*
 !.claude/state/.gitignore
 
-# (No React Native app is scaffolded yet — language/build ignores are added at MR1.)
+# React Native / Node app (scaffolded MR-A)
+node_modules/
+ios/Pods/
+ios/build/
+android/build/
+android/.gradle/
+*.log
+coverage/
+.env*
+*.keystore

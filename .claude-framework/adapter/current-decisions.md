@@ -31,6 +31,7 @@ decisions are explicitly not carried (see
 | ADR-MWR-007 | Active | **Health targets are Apple Health (iOS) + Health Connect (Android) ONLY.** **No Google Fit and no direct vendor SDK** without explicit human approval. The Android health-store target is **Health Connect** — never "Google HealthKit" (a wrong term) and never Google Fit. (Master REQ §2, §4, §8; see [`known-legacy.md`](known-legacy.md)) |
 | ADR-MWR-008 | Active | **The execution plan classifies every operation and is deterministically replayable.** Each operation is `writable \| unsupported \| permission_missing \| invalid \| skipped`; blocked operations carry a `reason_code` and are visible before the run. Replaying a stored plan is deterministic — relative time resolves to absolute via an injected clock; no ambient `Date.now()`/`Math.random()` in the run path. **This is deterministic REPLAY, not data generation.** (Master REQ §6, §7 MR-PLAN-002/003, §10) |
 | ADR-MWR-009 | TO_VERIFY (direction Active) | **Per-platform metric writability is verified per phase, not assumed.** The framework must not assume every catalog metric is writable on a given platform; an unsupported metric is surfaced + skipped-with-reason (`status: unsupported`, `reason_code`), never silently dropped. The concrete per-metric iOS HealthKit / Android Health Connect writability matrix is `TO_VERIFY` and confirmed in MR0/MR3/MR4/MR5 against current official docs. (Master REQ §8; R-MWR-005) |
+| ADR-MWR-010 | Active | **MR-A foundation stack (ratified; human-approved at MR-A, gates #9 + #5).** Bare **React Native CLI 0.74.5** + **TypeScript (strict)** + **React Navigation v6** (native-stack) + **`react-native-keychain`** for OS-backed (Keychain/Keystore) token/session storage — **no Expo, no plain AsyncStorage for tokens**. Native iOS Swift / Android Kotlin modules for the health writers come later (MR-D+); native-module prefix `Mwr<Capability>` retained. App lives at repo root (`package.json`, `src/`, `App.tsx`); native `ios/`/`android/` projects are generated from the RN 0.74.5 template at setup (not hand-authored). Concretizes ADR-MWR-001. (Master REQ §1, §5; ADR-MWR-006) |
 
 ## Open / TO_VERIFY decisions (do not bake in)
 
@@ -41,13 +42,13 @@ Each is a hard human-approval gate where noted.
 | Topic | Status | Note |
 |---|---|---|
 | Exact backend endpoints MWR calls | `Open` / `TO_VERIFY` | Reuse existing MWDS routes vs new `/mobile/*`; locked in MR0. A backend API gap that would force local fabrication is a hard gate. |
-| Token refresh / session storage strategy | `Open` / `TO_VERIFY` | Keychain/Keystore choice + refresh model beyond secret-by-reference is a hard gate (human-approval-gates #5). |
+| Token refresh / session storage strategy | **Resolved (ADR-MWR-010, MR-A)** | OS-backed storage = `react-native-keychain` (Keychain/Keystore); gate #5 human-approved at MR-A. Token **refresh** model kept minimal in MR-A and finalized when the backend refresh endpoint is confirmed. |
 | Writable metrics on iOS HealthKit (POC) | `Open` / `TO_VERIFY` | Confirm per metric before MR4 (ADR-MWR-009). |
 | Writable metrics on Android Health Connect (POC) | `Open` / `TO_VERIFY` | Confirm per metric before MR5 (ADR-MWR-009). |
 | Run reporting (`POST /mobile/runs`) added before MR6 | `Open` / `TO_VERIFY` | Backend capability question; if absent, do not fabricate. |
 | Real-write gating: DEV build flag, env flag, or both | `Open` / `TO_VERIFY` | Settled at MR0/MR1 ([`settings-map.md`](settings-map.md)). |
 | Run scope: one scenario, the whole ordered list, or both | `Open` / `TO_VERIFY` | Product question for MR0. |
-| RN baseline + native-module prefix (`Mwr<Capability>`) | `Open` / `TO_VERIFY` | Set at scaffold; codegen ADR follows. |
+| RN baseline + native-module prefix (`Mwr<Capability>`) | **Resolved (ADR-MWR-010, MR-A)** | RN CLI 0.74.5 + TS strict + React Navigation v6 ratified at MR-A; native-module prefix `Mwr<Capability>` retained for the MR-D+ writers (native codegen ADR still follows when the writers land). |
 
 ## Decision notes
 
