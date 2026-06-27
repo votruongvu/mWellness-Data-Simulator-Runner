@@ -35,3 +35,15 @@ validate-framework.sh PASS (0 errors); context-pack OK; internal links 0 broken.
 - **P0:** resolve the per-operation **payload source** (a real GET returning concrete scenario values, or an approved payload source) — clears PAYLOAD_GAP.
 - **P1:** human-approve gates #1/#2/#3/#9; generate native `ios/`/`android/` projects (RN 0.74.5 template); provide a real iOS device + Android device w/ Health Connect; populate the device QA matrix + name a QA owner.
 - **P2:** record PAYLOAD_GAP in `adapter/known-risks.md`; align `MWR_EXECUTION_STATE.md` STATUS.
+
+---
+
+## REOPEN NOTE — F8 payload unblock patch (2026-06-27, one-off; not a loop run)
+Backend F8 delivered `GET …/runnable-payload`. The MR-C `PAYLOAD_GAP` is **reclassified
+→ PAYLOAD_VERIFIED (route + mobile consuming path)**; live-authenticated concrete-value
+fetch is the gating follow-up (no token this session). Implemented operation-level
+execution plan + dry-run from the F8 payload (read-only, no-write, no fabrication, +14
+tests). **No native HealthKit/Health Connect/permission/real-write code added.** MR-C
+stories 002–005 may resume only after: live-auth payload confirmation + native substrate
+(`ios/`/`android/`) + human-approval gates #1/#2/#3/#9 + device QA. See
+`docs/contracts/MR_C_NATIVE_WRITER_PAYLOAD_CONTRACT.md` (F8 reclassification).

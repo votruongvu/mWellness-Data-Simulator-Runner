@@ -99,3 +99,12 @@ exact operation counts are **deferred (scenario payload not in MR-B read scope)
 to MR-C**. Operation counts that are not directly returned by the backend are
 labeled **estimated / deferred**, never asserted, and no per-segment values or
 timestamps are fabricated.
+
+## F8 update (2026-06-27) — runnable-payload route
+Backend F8 added `GET /api/v1/test-cases/{id}/versions/{version_id}/runnable-payload`
+(version-level concrete per-operation payload). **Verified present** live: `401`
+(auth-gated; non-existent id also `401`, not `404`). This is the per-operation
+value source the MR-B addendum noted as missing — it clears the MR-C `PAYLOAD_GAP`
+at the route level. Consumed read-only by `src/testCases/runnablePayloadApi.ts`
+(`getRunnablePayload`). Authenticated live-data shape verification pending (no token
+this session). See `docs/contracts/MR_C_NATIVE_WRITER_PAYLOAD_CONTRACT.md`.

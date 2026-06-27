@@ -108,3 +108,117 @@ export function emptyTotals(): PlanTotals {
 
 /** Type-only re-export anchor so the version type is co-located. */
 export type {Version};
+
+/* ------------------------------------------------------------------------- *
+ * MR-C — F8 OPERATION-LEVEL execution plan (concrete operations).
+ *
+ * The MR-B model above is metric-level (no payload). MR-C consumes the backend
+ * F8 runnable payload, which carries CONCRETE per-operation detail (value,
+ * unit, time model, idempotency key). These types add that operation-level
+ * granularity WITHOUT changing the MR-B metric-level types, which remain the
+ * read-only fallback/diagnostic path.
+ *
+ * Rules baked in:
+ *  - Backend IDs (operation_id, idempotency_key), scenario order_index, units,
+ *    values and timestamps are preserved verbatim — never fabricated.
+ *  - `permission_missing` is RESERVED here (capability/permission is MR-D) and
+ *    is never emitted by the operation-level builder.
+ *  - An operation missing a required concrete field is `invalid` with a reason
+ *    code — surfaced, never silently dropped, never given a fabricated value.
+ * ------------------------------------------------------------------------- */
+
+/** Operation-level reason codes (superset of the MR-B reason codes). */
+export type OperationReasonCode =
+  | 'OK'
+  | 'MISSING_VALUE'
+  | 'MISSING_UNIT'
+  | 'MISSING_TIME'
+  | 'MISSING_IDEMPOTENCY_KEY'
+  | 'MISSING_METRIC_REF'
+  | 'METRIC_NOT_WRITABLE_ON_PLATFORM'
+  | 'METRIC_INACTIVE'
+  | 'METRIC_METADATA_MISSING'
+  // Reserved — never emitted by the operation-level builder (MR-D):
+  | 'PERMISSION_MISSING';
+
+/** One concrete planned operation, preserving backend provenance verbatim. */
+export interface PlanConcreteOperation {
+  /** Backend operation id — preserved verbatim. */
+  operationId: string;
+  /** Owning backend scenario id — preserved verbatim. */
+  scenarioId: string;
+  /** Metric reference (at least one present in a valid op). */
+  metricSlug?: string;
+  metricId?: string;
+  destinationSlug?: string;
+  profileSlug?: string;
+  operationKind: string;
+  /** Concrete value — verbatim from the backend; undefined only when missing. */
+  value?: number | string;
+  unit?: string;
+  startTime?: string;
+  endTime?: string;
+  /** Stable backend idempotency key — preserved verbatim. */
+  idempotencyKey?: string;
+  metadata?: Record<string, unknown>;
+  status: OperationStatus;
+  reasonCode: OperationReasonCode;
+  detail: string;
+}
+
+/** Per-scenario grouping of concrete operations, in backend order. */
+export interface PlanConcreteScenarioGroup {
+  scenarioId: string;
+  scenarioName: string;
+  /** Scenario order position from the backend order_index. */
+  scenarioOrder: number;
+  operations: PlanConcreteOperation[];
+}
+
+/** Rolled-up operation-level totals (concrete operations). */
+export interface ConcretePlanTotals {
+  writable: number;
+  unsupported: number;
+  invalid: number;
+  skipped: number;
+  /** Always 0 here (permission checks are MR-D). */
+  permissionMissing: number;
+  /** Total concrete operations classified. */
+  total: number;
+}
+
+/**
+ * The OPERATION-LEVEL execution plan built from the F8 runnable payload.
+ * `operationDetailDeferred` is false — concrete detail IS present here.
+ */
+export interface ConcreteExecutionPlan {
+  /** Discriminator so screens can tell an F8 plan from an MR-B metric plan. */
+  kind: 'operation';
+  testCaseId: string;
+  versionId: string;
+  versionNumber: number;
+  /** Backend payload status (e.g. "ready"). */
+  payloadStatus: string;
+  /** ISO time the backend generated the payload. */
+  generatedAt: string;
+  destinationSlug: string;
+  targetLabel: string;
+  device: 'iOS' | 'Android' | 'Unknown';
+  groups: PlanConcreteScenarioGroup[];
+  totals: ConcretePlanTotals;
+  /** False — concrete per-operation detail is present (not deferred). */
+  operationDetailDeferred: false;
+  boundaryNote: string;
+}
+
+/** Convenience: empty concrete totals. */
+export function emptyConcreteTotals(): ConcretePlanTotals {
+  return {
+    writable: 0,
+    unsupported: 0,
+    invalid: 0,
+    skipped: 0,
+    permissionMissing: 0,
+    total: 0,
+  };
+}

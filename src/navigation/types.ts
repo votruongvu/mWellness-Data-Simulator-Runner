@@ -41,9 +41,17 @@ export type RootStackParamList = {
   ExecutionPlanPreview: {
     testCaseId: string;
     versionId: string;
+    /**
+     * MR-C — when 'operation', the preview loads the backend F8 runnable
+     * payload and renders operation-level (concrete) detail. Absent/'metric'
+     * keeps the MR-B metric-level fallback path.
+     */
+    planSource?: 'operation' | 'metric';
   };
   DryRunResult: {
     testCaseId: string;
     versionId: string;
+    /** MR-C — same operation-level vs metric-level selector as the preview. */
+    planSource?: 'operation' | 'metric';
   };
 };

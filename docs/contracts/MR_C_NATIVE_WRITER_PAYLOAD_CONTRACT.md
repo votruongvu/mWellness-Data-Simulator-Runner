@@ -2,6 +2,22 @@
 
 **Phase:** MR-C (Native Writer MVP) · **Story:** MWR-MRC-001 (Native Writer Readiness + Payload Contract) · **Date:** 2026-06-27.
 
+> ## ⟳ F8 RECLASSIFICATION (2026-06-27, one-off unblock patch) — supersedes the original decision below
+>
+> **Backend F8 added `GET /api/v1/test-cases/{id}/versions/{version_id}/runnable-payload`,
+> which returns concrete per-operation values.** This patch verified and consumed it.
+>
+> **Status: `PAYLOAD_VERIFIED` (route + mobile consuming path) — live-authenticated fetch PENDING.**
+> - F8 route **verified present** live: `GET …/runnable-payload` → `401` (registered, auth-gated; a non-existent id also returns 401, not 404).
+> - Mobile now has a typed client (`getRunnablePayload`) + DTOs + an adapter guard, an **operation-level execution plan** (`buildExecutionPlanFromPayload`, the **preferred** MR-C input), and an **operation-level dry-run** (`simulateDryRunFromPayload`, strictly no-write) consuming concrete `value/unit/start_time/end_time/idempotency_key/operation_id`.
+> - **No fabrication:** an operation missing a required concrete field → classified `invalid` with a `reason_code` (`MISSING_VALUE`/`MISSING_UNIT`/`MISSING_TIME`/`MISSING_IDEMPOTENCY_KEY`/`MISSING_METRIC_REF`) — never dropped, never back-filled.
+> - **Honesty caveat (load-bearing):** an **authenticated live fetch** of `runnable-payload` returning real concrete values for a real version was **NOT run in this session (no token)**. The route exists and the mobile path consumes + guards the authoritative contract, but this single live confirmation is the **#1 follow-up** before relying on it for any native write.
+> - **MR-C stories 002–005 (native writers) MAY resume** — but remain blocked on: the live-auth payload confirmation above **and** native substrate (`ios/`/`android/` not generated) + human-approval gates #1/#2/#3/#9 + device QA (`NOT_EXECUTED`). **This patch added no native write/permission code.**
+> - The minimal candidate metric set (§3) moves from `blocked_no_payload` → **`to_verify_on_write`** (payload source now exists; native mapping/writability + live data still to verify).
+
+---
+
+**(Original decision — historical; superseded by the F8 reclassification above.)**
 **Decision: `PAYLOAD_GAP` — MR-C is BLOCKED before native write implementation.**
 Per MWR-MRC-001's hard gate, no native writer/bridge code is written in this phase
 until a real per-operation payload source is verified and the native-write gates

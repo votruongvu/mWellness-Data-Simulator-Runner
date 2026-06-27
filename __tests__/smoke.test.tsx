@@ -10,9 +10,11 @@ import {EnvBadge} from '../src/shared/components/EnvBadge';
 import {SafetyBanner} from '../src/shared/components/SafetyBanner';
 
 describe('MR-A foundation smoke', () => {
-  it('renders the env badge with the default label', () => {
+  it('renders the env badge with the configured label', () => {
     render(<EnvBadge />);
-    expect(screen.getByText('ENV · dev')).toBeTruthy();
+    // Decoupled from the specific value: the env label comes from `.env`
+    // (react-native-dotenv), which differs per machine (dev/local/...).
+    expect(screen.getByText(/^ENV · .+/)).toBeTruthy();
   });
 
   it('renders the dry-run-default safety banner', () => {

@@ -95,3 +95,10 @@ secrets/endpoints is FULL lane and carries the universal high-risk gate stack.
 MR4 (real Apple Health write) and MR5 (real Health Connect write) NEVER
 auto-run.
 ```
+
+## MR-C update (2026-06-27) — F8 payload unblock patch
+MR-C story 001 PAYLOAD_GAP **reclassified → PAYLOAD_VERIFIED (route + consuming path)**
+after backend F8 added `GET …/runnable-payload` (verified present; mobile consumes it
+operation-level, no fabrication). Live-authenticated concrete-value fetch PENDING.
+MR-C 002–005 (native writers) still gated on substrate + gates #1/#2/#3/#9 + device QA.
+This was a one-off patch (not a phase-loop run); no native write/permission code added.

@@ -60,8 +60,16 @@ export function VersionScenariosScreen(): React.JSX.Element {
     }
   }, [resource.error, expireSession, navigation, env.apiBaseUrl]);
 
+  // MR-C — "Build execution plan" loads the backend F8 runnable payload for an
+  // operation-level (concrete) plan + dry-run. The preview/dry-run screens own
+  // the F8 fetch (consistent with the other read-only screens) and fall back to
+  // the MR-B metric-level path on their own when no F8 plan is available.
   const onBuildPlan = useCallback(() => {
-    navigation.navigate('ExecutionPlanPreview', {testCaseId, versionId});
+    navigation.navigate('ExecutionPlanPreview', {
+      testCaseId,
+      versionId,
+      planSource: 'operation',
+    });
   }, [navigation, testCaseId, versionId]);
 
   if (resource.status === 'loading') {
