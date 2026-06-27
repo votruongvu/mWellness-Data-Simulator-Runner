@@ -1,0 +1,107 @@
+{
+  "project": "mWellness-Mobile-Runner",
+  "phase": "MR-DESIGN-00",
+  "phase_name": "Design Handoff Normalization",
+  "target_import_path": "artifacts/stories/mr-design-00/",
+  "story_count": 7,
+  "execution_order": [
+    "STORY-import-and-archive-accepted-design-package.md",
+    "STORY-create-final-core-screen-map.md",
+    "STORY-create-end-to-end-flow-specification.md",
+    "STORY-create-component-kit-and-state-matrix.md",
+    "STORY-create-safety-gate-ux-matrix.md",
+    "STORY-create-implementation-handoff.md",
+    "STORY-close-design-handoff-loop.md"
+  ],
+  "stories": [
+    {
+      "order": 1,
+      "story_id": "MWR-DESIGN-001",
+      "file": "STORY-import-and-archive-accepted-design-package.md",
+      "depends_on": [],
+      "title": "Import and archive accepted design package",
+      "area": "design/archive"
+    },
+    {
+      "order": 2,
+      "story_id": "MWR-DESIGN-002",
+      "file": "STORY-create-final-core-screen-map.md",
+      "depends_on": [
+        "MWR-DESIGN-001"
+      ],
+      "title": "Create final core screen map",
+      "area": "design/screen-map"
+    },
+    {
+      "order": 3,
+      "story_id": "MWR-DESIGN-003",
+      "file": "STORY-create-end-to-end-flow-specification.md",
+      "depends_on": [
+        "MWR-DESIGN-002"
+      ],
+      "title": "Create end-to-end flow specification",
+      "area": "design/flows"
+    },
+    {
+      "order": 4,
+      "story_id": "MWR-DESIGN-004",
+      "file": "STORY-create-component-kit-and-state-matrix.md",
+      "depends_on": [
+        "MWR-DESIGN-002",
+        "MWR-DESIGN-003"
+      ],
+      "title": "Create component kit and state matrix",
+      "area": "design/components"
+    },
+    {
+      "order": 5,
+      "story_id": "MWR-DESIGN-005",
+      "file": "STORY-create-safety-gate-ux-matrix.md",
+      "depends_on": [
+        "MWR-DESIGN-003",
+        "MWR-DESIGN-004"
+      ],
+      "title": "Create safety gate UX matrix",
+      "area": "design/safety"
+    },
+    {
+      "order": 6,
+      "story_id": "MWR-DESIGN-006",
+      "file": "STORY-create-implementation-handoff.md",
+      "depends_on": [
+        "MWR-DESIGN-002",
+        "MWR-DESIGN-003",
+        "MWR-DESIGN-004",
+        "MWR-DESIGN-005"
+      ],
+      "title": "Create implementation handoff",
+      "area": "design/handoff"
+    },
+    {
+      "order": 7,
+      "story_id": "MWR-DESIGN-007",
+      "file": "STORY-close-design-handoff-loop.md",
+      "depends_on": [
+        "MWR-DESIGN-001",
+        "MWR-DESIGN-002",
+        "MWR-DESIGN-003",
+        "MWR-DESIGN-004",
+        "MWR-DESIGN-005",
+        "MWR-DESIGN-006"
+      ],
+      "title": "Close design handoff loop",
+      "area": "design/closeout"
+    }
+  ],
+  "hard_rules": [
+    "Design/docs-only.",
+    "Master REQ remains canonical.",
+    "Design is UI/UX implementation input.",
+    "No product code.",
+    "No React Native scaffold.",
+    "No backend API implementation.",
+    "No HealthKit/Health Connect native write implementation.",
+    "No MR0/MR1/later implementation stories.",
+    "Do not weaken dry-run/capability/permission/confirmation safety gates."
+  ]
+}
