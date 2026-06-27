@@ -4,7 +4,7 @@ phase: MR-B
 order: 4
 title: "Dry-run Result + MR-B Closeout"
 depends_on: ["MWR-MRB-001", "MWR-MRB-002", "MWR-MRB-003"]
-status: ready
+status: done
 ---
 
 # MWR-MRB-004 — Dry-run Result + MR-B Closeout
@@ -188,3 +188,13 @@ Commit body must include story path, summary, validation results, non-goals pres
 ## Closeout Requirements
 
 Return story closeout with status, commit hash, files changed, capability impact, verified backend URLs, validation results, and P0/P1/P2 followups.
+
+---
+
+## Execution Record — MR-B phase loop
+- **Executed:** 2026-06-27 · branch `main`. **Status:** DONE.
+- **Deliverable:** `src/runner/dryRun.ts` (pure `simulateDryRun` — no real writes/network) + `src/screens/DryRunResultScreen.tsx` (P09: "No health data was written", writable/would-skip/blocked counts, warnings, permission deferred to MR-C/MR-D, no real-write button); PHASE_CLOSEOUT + traceability + index.
+- **Validation:** validate-framework.sh PASS; tsc clean; links 0 broken.
+- **Confirmations:** no MR-C/native scope; no fake success; read-only; authoring/upload/reorder/seed/admin routes not used.
+- **Readiness:** MR-C READY_WITH_FOLLOWUPS (needs scenario payload route + capability/permission + native writers — hard-gated).
+- **Followups:** P1 — scenario payload/per-op detail + permission flow at MR-C; ESLint plugin fix.
