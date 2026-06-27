@@ -4,7 +4,7 @@ phase: MR-A
 order: 3
 title: "Auth Session + Secure Storage + Backend Client"
 depends_on: ["MWR-MRA-001", "MWR-MRA-002"]
-status: ready
+status: done
 ---
 
 # MWR-MRA-003 — Auth Session + Secure Storage + Backend Client
@@ -118,3 +118,14 @@ Commit body must include story path, summary, validation results, non-goals pres
 ## Closeout Requirements
 
 Return story closeout with status, commit hash, files changed, capability impact, validation results, and P0/P1/P2 followups.
+
+---
+
+## Execution Record — MR-A phase loop
+- **Executed:** 2026-06-27 · branch `main`. **Status:** DONE.
+- **Deliverable:** `src/backend/` (types + `apiClient.ts`: fetch wrapper, base-URL from config, `Authorization: Bearer`, `x-request-id` capture, ApiError envelope mapping 401→AUTH_EXPIRED / 503·network→BACKEND_UNAVAILABLE / 400·422→VALIDATION); `src/shared/redaction.ts` (masks tokens/Authorization/secrets); `src/auth/` (`secureStorage.ts` react-native-keychain WHEN_UNLOCKED_THIS_DEVICE_ONLY — sole token store; `authApi.ts` login/me/logout/refresh; `SessionContext.tsx` booting→unauthenticated/authenticated/expired, restore-on-boot, login/logout).
+- **Gate #5 (token storage):** OS-backed Keychain/Keystore via react-native-keychain; **no AsyncStorage for tokens**; tokens never logged (dev-gated + redacted).
+- **No fake success:** `apiClient` returns `BACKEND_UNAVAILABLE` when no base URL/on failure (never fabricates); `SessionContext.login` flips to `authenticated` ONLY after a real `{ok:true}` + keychain save; with no backend reachable here, login surfaces the typed backend gap → Backend-Unavailable, never a fake session.
+- **Validation:** `validate-framework.sh` PASS; safety grep — no AsyncStorage token use, no fake-success path. Typecheck/tests NOT run (no toolchain) — documented.
+- **Non-goals preserved:** no runnable-data APIs beyond client base; no execution-plan/native-write; no mock auth success.
+- **Followups:** P1 — wire to real MWDS auth routes + finalize refresh model when backend reachable; P2 — run jest/tsc on a toolchained machine.
