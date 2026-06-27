@@ -60,3 +60,14 @@ android/             RN Android substrate (Kotlin Health Connect module, manifes
   scaffold (MR1), subject to ADR.
 - Concrete file names per hop — see [`wiring-paths.md`](wiring-paths.md)
   for the authoritative *shapes*; files land with their phase.
+
+## MR-A update (2026-06-27) — app foundation now exists
+The React Native app foundation was scaffolded at **repo root** in MR-A (ADR-MWR-010):
+`package.json`, `tsconfig.json`, `App.tsx`, `index.js`, and `src/` —
+`src/config` (env seam), `src/navigation` (RootNavigator: auth vs app stack),
+`src/shared` (theme + components + redaction), `src/auth` (secureStorage[keychain],
+authApi, SessionContext), `src/backend` (apiClient, types), `src/screens`
+(Splash, Login, Dashboard, Settings, errors/{SessionExpired,BackendUnavailable}).
+Native `ios/`/`android/` projects are generated from the RN 0.74.5 template at
+setup (not committed). MR-B+ adds test-case/scenario/runner/health code. Build/run
+not yet toolchain-verified — see `docs/platform/MWR_APP_FOUNDATION_SETUP.md`.

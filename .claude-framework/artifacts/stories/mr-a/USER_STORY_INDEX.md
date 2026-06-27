@@ -68,3 +68,13 @@ After all stories are complete:
 - confirm no native write code was added
 - classify MR-B readiness
 - stop for human review
+
+## Execution Status (run-phase-loop, 2026-06-27, branch main)
+| Order | Story ID | Commit | Status |
+|---:|---|---|---|
+| 01 | MWR-MRA-001 | `38b5611` | DONE |
+| 02 | MWR-MRA-002 | `e8f03a4` | DONE |
+| 03 | MWR-MRA-003 | `5ca9d0f` | DONE |
+| 04 | MWR-MRA-004 | (closeout) | DONE |
+
+Phase result: **4/4 DONE**. MR-B readiness: READY_WITH_FOLLOWUPS (needs reachable MWDS backend + toolchain build verification). Loop stops for human review.

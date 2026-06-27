@@ -4,7 +4,7 @@ phase: MR-A
 order: 4
 title: "Dashboard / Error States / MR-A Closeout"
 depends_on: ["MWR-MRA-001", "MWR-MRA-002", "MWR-MRA-003"]
-status: ready
+status: done
 ---
 
 # MWR-MRA-004 — Dashboard / Error States / MR-A Closeout
@@ -120,3 +120,12 @@ Commit body must include story path, summary, validation results, non-goals pres
 ## Closeout Requirements
 
 Return story closeout with status, commit hash, files changed, capability impact, validation results, and P0/P1/P2 followups.
+
+---
+
+## Execution Record — MR-A phase loop
+- **Executed:** 2026-06-27 · branch `main`. **Status:** DONE.
+- **Deliverable:** `src/screens/DashboardScreen.tsx` (identity, env badge, Safety-mode "Dry-run default" banner, capability placeholder, "Browse test cases" disabled "Coming in MR-B", Logout); `src/screens/SettingsScreen.tsx` ("Safety gates… cannot be disabled"); `src/screens/errors/SessionExpiredScreen.tsx` (E01) + `BackendUnavailableScreen.tsx` (E02 with endpoint/code/requestId); PHASE_CLOSEOUT + traceability + index + repository-map update.
+- **Validation:** validate-framework.sh PASS; links 487/0 broken; no MR-B/MR-C scope leak; no native write/permission code; no fake success.
+- **Readiness:** MR-B READY_WITH_FOLLOWUPS (needs reachable backend + toolchain build).
+- **Followups:** P1 — real MWDS base URL + routes + login verification; P2 — toolchain build/typecheck/test + native projects.
