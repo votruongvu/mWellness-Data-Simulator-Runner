@@ -4,7 +4,7 @@ phase: MR-DESIGN-00
 order: 2
 title: "Create final core screen map"
 depends_on: ["MWR-DESIGN-001"]
-status: ready
+status: done
 ---
 
 # MWR-DESIGN-002 — Create Final Core Screen Map
@@ -105,3 +105,13 @@ Commit body must include story path, summary, validation results, non-goals pres
 ## Closeout Requirements
 
 Return story closeout with status, commit hash, files changed, design impact, validation results, and P0/P1/P2 followups.
+
+---
+
+## Execution Record — MR-DESIGN-00 phase loop
+- **Executed:** 2026-06-27 · branch `mr-design-00-stories`. **Status:** DONE.
+- **Deliverable:** `artifacts/design/mobile-runner/MOBILE_RUNNER_SCREEN_MAP.md` — 14 primary + 5 secondary + 4 error screens (23 reconciled).
+- **Normalizations applied:** environment demoted to a lightweight badge/connection (not local/dev/staging/prod primary UX); `profile` = device/source profile (Apple Watch), never `athlete`; terminology Apple Health/HealthKit/iOS + Health Connect/Health Connect/Android; iOS + Android happy paths both first-class; Unsupported Platform split iOS/Android; safety gates retained.
+- **Validation:** markdown OK; internal links resolve. No product/RN/backend/native code.
+- **Non-goals preserved:** no authoring/catalog/seed/upload/reorder/export-bundle/Google Fit/RBAC; design subordinate to Master REQ.
+- **Followups:** none.
