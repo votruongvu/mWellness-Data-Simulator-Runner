@@ -83,3 +83,10 @@ No writer/permission code exists.
   without explain-before-prompt + capability, even if a native module is later installed. The
   five-gate chain + no-fake-success are preserved; no write path exists. The on-screen pre-prompt
   explanation copy is **DRAFT** pending gate #3.
+
+## MR-C-003 gate approvals (2026-06-28)
+- **R-MWR-021 (P1, residual after approval):** MR-C-003 gates #1/#3/#9/#10 are human-APPROVED (ADR-MWR-011),
+  but the **device-QA fields were submitted as unfilled placeholders** — no real iPhone/iOS/owner is named.
+  Per the device-QA ground rule + no-fake-success, the **real on-device write cannot be executed or validated**,
+  and the POC cannot be declared successful, until a concrete device + named QA owner are provided. Native
+  scaffolding/build may proceed; the real write may not. **Do not fabricate a device or claim a successful write.**

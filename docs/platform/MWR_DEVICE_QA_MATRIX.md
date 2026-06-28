@@ -69,3 +69,9 @@ be filled here before the real-write POC can be approved: a real **iPhone 12+**,
 approved DEV/QA Apple ID, a HealthKit-enabled App ID/provisioning profile, and a **named iOS device
 QA owner**. **These remain `TO_VERIFY` / `NOT_EXECUTED` — none were available to fill and none were
 fabricated.** Source: [`../contracts/MR_C_003_IOS_WRITE_POC_READINESS_PACKET.md`](../contracts/MR_C_003_IOS_WRITE_POC_READINESS_PACKET.md).
+
+## MR-C-003 gate approval (2026-06-28) — device still UNFILLED
+Gates #1/#3/#9/#10 for the iOS HealthKit write POC are human-APPROVED (ADR-MWR-011), BUT the device fields here
+remain **`TO_VERIFY` / `NOT_EXECUTED`** — the approval submitted `<real iPhone model>` / `<version>` / `<name>`
+as unfilled placeholders. The real-write POC still **cannot run or be validated** until a concrete real iPhone +
+iOS version + named QA owner are entered above. Nothing was fabricated.

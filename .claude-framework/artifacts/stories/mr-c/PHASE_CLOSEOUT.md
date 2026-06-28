@@ -106,3 +106,13 @@ entitlement/Info.plist/native-module + ADR-MWR-011 change plan. **NO native modu
 Info.plist/entitlement change, NO prompt, NO write, NO real-write button.** **MR-C-003 go/no-go =
 NO-GO → classified BLOCKED** (all four gates PENDING + no device/owner + native module/ADR absent).
 See docs/contracts/MR_C_003_IOS_WRITE_POC_READINESS_PACKET.md.
+
+---
+
+## MR-C-003 GATE APPROVALS — 2026-06-28 (governance; not a loop run)
+Human Decision Owner APPROVED gates #1/#3/#9/#10 (scoped: minimal HealthKit write POC, internal/DEV-QA only,
+no production claim, no Android, five-gate chain + no-fake-success enforced). Recorded in current-decisions
+**ADR-MWR-011** + the readiness packet. **Device QA fields arrived as unfilled placeholders — not filled, not
+fabricated.** No native change applied. MR-C-003 reclassified **READY_WITH_FOLLOWUPS**: implementation (native
+entitlement/Info.plist/`MwrHealthKit` module behind the gate chain) MAY begin; the **real on-device write + QA
+sign-off remain BLOCKED** until a concrete real iPhone + iOS version + named QA owner are provided.

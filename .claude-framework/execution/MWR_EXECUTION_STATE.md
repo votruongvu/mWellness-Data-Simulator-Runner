@@ -157,3 +157,15 @@ aligned to the approved design copy bank), and the **entitlement/Info.plist/nati
 change plan** (plan only). **Go/No-Go = NO-GO; MR-C-003 classified BLOCKED** — all four gates PENDING,
 no device/owner named, native module + ADR-MWR-011 absent, candidate-metric writability TO_VERIFY.
 See docs/contracts/MR_C_003_IOS_WRITE_POC_READINESS_PACKET.md.
+
+## MR-C update (2026-06-28) — MR-C-003 gate approvals (#1/#3/#9/#10) recorded
+Human Decision Owner **APPROVED** gates **#1** (real Apple Health write — *minimal POC only*), **#3**
+(permission-prompt timing + readiness-packet §3 copy), **#9** (HealthKit entitlement + `Info.plist`
+`NSHealth*UsageDescription` + **ADR-MWR-011** + native `MwrHealthKit` module), **#10** (MR-C-003 permission
+UX) — **scoped:** internal/DEV-QA only, no production claim, no Android, five-gate chain enforced, minimal
+approved metric set, no fake success, no unsupported/denied/invalid write attempt. Recorded in
+current-decisions **ADR-MWR-011**. **Device QA fields arrived as unfilled placeholders — NOT filled, NOT
+fabricated.** No native change applied (approval recorded only; `REAL_WRITE_ENABLED` stays FALSE — no writer
+built). MR-C-003 reclassified **READY_WITH_FOLLOWUPS**: native scaffolding + guarded write-path implementation
+MAY begin (builds/simulator need no device); the **real on-device write + QA sign-off remain BLOCKED** until a
+concrete real iPhone + iOS version + named QA owner are provided. See docs/contracts/MR_C_003_IOS_WRITE_POC_READINESS_PACKET.md.

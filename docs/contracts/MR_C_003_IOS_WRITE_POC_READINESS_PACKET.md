@@ -11,22 +11,25 @@ MR-C-002 guarded seam ([`MR_C_002_HEALTHKIT_CAPABILITY_PERMISSION_BRIDGE.md`](MR
 
 ---
 
-## 0. GO / NO-GO decision — **NO-GO (BLOCKED)**
-MR-C-003 **must not start** until every item below is cleared. As of this packet, **all
-four gates are PENDING and no real device/QA owner is named** — so the decision is **NO-GO**.
+## 0. GO / NO-GO decision — **CONDITIONAL GO** (gates approved 2026-06-28; on-device write BLOCKED pending a named device)
+The four human-approval gates are **APPROVED** (Human Decision Owner, 2026-06-28; ADR-MWR-011 + §7).
+Implementation of the native scaffolding + the guarded write path may proceed. **But the real
+on-device write + QA sign-off remain BLOCKED** — the §2 device-QA fields were submitted as unfilled
+placeholders, so no real device/owner is named (not fabricated).
 
-| # | Blocking item | State |
+| # | Item | State |
 |---|---|---|
-| B1 | Human gate **#1** (real Apple Health auth/write) approved | ❌ PENDING |
-| B2 | Human gate **#3** (OS prompt timing + the copy in §3) approved | ❌ PENDING |
-| B3 | Human gate **#9** (HealthKit entitlement + Info.plist + native module + ADR-MWR-011) approved | ❌ PENDING |
-| B4 | Human gate **#10** (reconcile the permission UX with approved design P10/P11) approved | ❌ PENDING |
-| B5 | A concrete **real iPhone + iOS version + named QA owner** (§2) | ❌ TO_VERIFY (none named) |
-| B6 | Native **`MwrHealthKit(Writer)`** module exists implementing the seam | ❌ not built |
-| B7 | Per-metric **writability** confirmed for the candidate set (ADR-MWR-009) | ❌ TO_VERIFY |
+| B1 | Human gate **#1** (real Apple Health auth/write) | ✅ APPROVED 2026-06-28 — minimal write POC only |
+| B2 | Human gate **#3** (OS prompt timing + the copy in §3) | ✅ APPROVED 2026-06-28 |
+| B3 | Human gate **#9** (HealthKit entitlement + Info.plist + native module + ADR-MWR-011) | ✅ APPROVED 2026-06-28 |
+| B4 | Human gate **#10** (MR-C-003 permission UX) | ✅ APPROVED 2026-06-28 |
+| B5 | A concrete **real iPhone + iOS version + named QA owner** (§2) | ❌ **STILL UNFILLED** (placeholders; not fabricated) |
+| B6 | Native **`MwrHealthKit(Writer)`** module exists implementing the seam | ❌ not built (MR-C-003 impl) |
+| B7 | Per-metric **writability** confirmed for the candidate set (ADR-MWR-009) | ❌ TO_VERIFY (on the named device) |
 
-> A simulator can never validate a real write (device-QA ground rule). Approving the §1
-> gates without a real device (§2) still leaves MR-C-003 **BLOCKED**.
+> A simulator can never validate a real write (device-QA ground rule). The gates are approved, but
+> **without a named real device (§2) the real write cannot be executed or validated** — so the POC's
+> defining deliverable stays BLOCKED until B5 is filled. No-fake-success forbids declaring success from a simulator.
 
 ---
 
@@ -37,10 +40,10 @@ never self-waived.
 
 | Gate | Exact decision being requested | Unlocks for MR-C-003 | Status | Approver / date |
 |---|---|---|---|---|
-| **#1** Real Apple Health / HealthKit write | Approve that MR-C-003 may call a real `HKHealthStore` `requestAuthorization` + `save` on an approved DEV/QA device, under the five-gate chain + no-fake-success | The real-write path (else stays dry-run/seam) | ❌ PENDING | `__________ / ____-__-__` |
-| **#3** Permission-prompt timing + copy | Approve **(a)** the pre-prompt explanation copy in §3.1, **(b)** the Info.plist OS-prompt strings in §3.2, **(c)** that the prompt fires only on the user's explicit "Continue" tap (P10) | The OS permission prompt may fire | ❌ PENDING | `__________ / ____-__-__` |
-| **#9** Native substrate / ADR | Approve the §4 entitlement + Info.plist + `HealthKit.framework` link + the native `MwrHealthKit(Writer)` module, ratified by a new **ADR-MWR-011** | The native write module + entitlements | ❌ PENDING | `__________ / ____-__-__` |
-| **#10** UX not in approved contract | Approve that the MR-C-002 preview screen is reconciled to the **approved design P10 (Permission Explanation) + P11 (Permission Status)** ([`MOBILE_RUNNER_SAFETY_UX_MATRIX.md`](../../artifacts/design/mobile-runner/MOBILE_RUNNER_SAFETY_UX_MATRIX.md)) | The finalized permission/confirmation UX | ❌ PENDING | `__________ / ____-__-__` |
+| **#1** Real Apple Health / HealthKit write | Approve that MR-C-003 may call a real `HKHealthStore` `requestAuthorization` + `save` on an approved DEV/QA device, under the five-gate chain + no-fake-success | The real-write path (else stays dry-run/seam) | ✅ APPROVED (scoped) | Human Decision Owner · 2026-06-28 |
+| **#3** Permission-prompt timing + copy | Approve **(a)** the pre-prompt explanation copy in §3.1, **(b)** the Info.plist OS-prompt strings in §3.2, **(c)** that the prompt fires only on the user's explicit "Continue" tap (P10) | The OS permission prompt may fire | ✅ APPROVED (scoped) | Human Decision Owner · 2026-06-28 |
+| **#9** Native substrate / ADR | Approve the §4 entitlement + Info.plist + `HealthKit.framework` link + the native `MwrHealthKit(Writer)` module, ratified by a new **ADR-MWR-011** | The native write module + entitlements | ✅ APPROVED (scoped) | Human Decision Owner · 2026-06-28 |
+| **#10** UX not in approved contract | Approve that the MR-C-002 preview screen is reconciled to the **approved design P10 (Permission Explanation) + P11 (Permission Status)** ([`MOBILE_RUNNER_SAFETY_UX_MATRIX.md`](../../artifacts/design/mobile-runner/MOBILE_RUNNER_SAFETY_UX_MATRIX.md)) | The finalized permission/confirmation UX | ✅ APPROVED (scoped) | Human Decision Owner · 2026-06-28 |
 
 *Note — gates #4 (bypass) and the on-device #5 real-write confirmation (P12) are enforced
 in code by MR-C-003; they are not separate human sign-offs but must be wired before any write.*
@@ -51,6 +54,11 @@ in code by MR-C-003; they are not separate human sign-offs but must be wired bef
 **Manual/device QA is `NOT_EXECUTED`.** Real values are **not available to this packet and
 were not fabricated.** Fill these before B5 can clear (mirror into
 [`MWR_DEVICE_QA_MATRIX.md`](../platform/MWR_DEVICE_QA_MATRIX.md)).
+
+> **Update 2026-06-28:** the gate approval submitted these fields as **unfilled placeholders**
+> (`<real iPhone model>` / `<version>` / `<name>`). They remain `TO_VERIFY` — the real on-device
+> write and QA sign-off **cannot proceed** until a concrete device + iOS version + named owner are
+> provided. Nothing was fabricated to fill them.
 
 | Field | Proposed target (confirm) | Filled value |
 |---|---|---|
@@ -156,19 +164,24 @@ run orchestration/reporting (MR-D), or any production claim.
 
 ## 7. Sign-off block (Human Decision Owner)
 ```
-Gate #1 (real Apple Health write) ...... approved by ____________  date __________
-Gate #3 (prompt timing + copy §3) ...... approved by ____________  date __________
-Gate #9 (entitlement/Info.plist/ADR) ... approved by ____________  date __________
-Gate #10 (permission UX P10/P11) ....... approved by ____________  date __________
-Device QA (§2 filled + owner named) .... confirmed by ___________  date __________
+Gate #1 (real Apple Health write) ...... APPROVED · Human Decision Owner · 2026-06-28 (minimal write POC only)
+Gate #3 (prompt timing + copy §3) ...... APPROVED · Human Decision Owner · 2026-06-28
+Gate #9 (entitlement/Info.plist/ADR) ... APPROVED · Human Decision Owner · 2026-06-28 (ADR-MWR-011)
+Gate #10 (permission UX P10/P11) ....... APPROVED · Human Decision Owner · 2026-06-28 (MR-C-003 UX only)
+Device QA (§2 filled + owner named) .... PENDING · device/iOS/owner still placeholders — must be filled before any real write
 ```
 
 ---
 
-## 8. Closeout classification — **BLOCKED**
-MR-C-003 is **BLOCKED**. Readiness inputs are now fully assembled (gates enumerated, device
-fields specified, final copy drafted for review, entitlement/Info.plist/ADR plan written), but
-**every gate (#1/#3/#9/#10) is PENDING, no real device/QA owner is named, and the native module
-+ ADR-MWR-011 do not exist.** When §1 gates are approved **and** §2 is filled with a real device +
-owner **and** ADR-MWR-011 lands, MR-C-003 may move to **READY** and implementation can begin
-against the MR-C-002 seam.
+## 8. Closeout classification — **READY_WITH_FOLLOWUPS** (updated 2026-06-28)
+Gates **#1/#3/#9/#10 are APPROVED** (2026-06-28; ADR-MWR-011), so MR-C-003 **implementation may
+begin**: author ADR-MWR-011's native design, add the HealthKit entitlement + `Info.plist` keys, and
+build the guarded `MwrHealthKit` write module behind the five-gate chain (the scaffolding + build +
+simulator/CI do not need a real device). **Blocking followup (the POC's defining deliverable):** the
+**real on-device write execution + QA sign-off remain BLOCKED** until §2 is filled with a concrete
+real iPhone + iOS version + named QA owner (currently unfilled placeholders). No-fake-success forbids
+declaring the POC successful from a simulator. Provide the device + owner → the real write is
+validated and MR-C-003 moves to fully READY / DONE.
+
+*(History: this packet was **BLOCKED** on 2026-06-28 pending gates; the gates were then approved the
+same day with device QA still unfilled → **READY_WITH_FOLLOWUPS**.)*
