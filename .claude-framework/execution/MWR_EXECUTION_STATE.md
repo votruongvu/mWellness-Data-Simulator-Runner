@@ -180,3 +180,19 @@ no-fake-success, implementation was **halted before any native change**: NO Heal
 remain APPROVED (ADR-MWR-011); MR-C-003 stays **READY_WITH_FOLLOWUPS** with the real on-device write
 **BLOCKED** on a named device + owner (R-MWR-021). `REAL_WRITE_ENABLED` still FALSE; no native writer
 exists. See docs/contracts/MR_C_003_BLOCKED_DEVICE_QA.md.
+
+## MR-C update (2026-06-28) — MWR-MRC-003 iOS guarded HealthKit write POC (IMPLEMENTED; build-verified)
+Implemented under approved gates #1/#3/#9/#10 (ADR-MWR-011): TS `executeGuardedWrite` (five-gate chain
+enforced — NO native write if any gate unmet; backend F8 payload values only; injected clock; NO fake
+success; partial≠full), `HealthKitBridge.writeQuantitySamples` + fail-closed default, native
+**`MwrHealthKit`** Obj-C++ module (guarded `HKHealthStore` save — success ONLY on native success;
+denied→skipped_permission, unsupported→skipped_unsupported, incomplete→skipped_invalid_payload;
+idempotency via `HKMetadataKeySyncIdentifier`=idempotency_key), **HealthKit entitlement** +
+**Info.plist** `NSHealth*UsageDescription` (approved §3 copy), **HealthKit.framework** linked, UI
+write-POC screen (real-write confirm + live gate checklist; write button DISABLED until all 5 gates),
++11 writer tests. Minimal set = **stepCount only** (others skipped_unsupported). tsc clean; **jest
+72/72**; **iOS xcodebuild (simulator) BUILD SUCCEEDED** (MwrHealthKit.mm compiles + links HealthKit;
+fixed: `concept` C++20 keyword → `conceptName`; framework explicitly linked). A real iOS write PATH now
+exists but is gated + dev-only. **Device QA NOT_EXECUTED** (no real device; runtime write not run/claimed).
+iOS only; no Android; no backend run reporting; no MR-D. MR-C-004 (Android) BLOCKED.
+See docs/contracts/MR_C_003_IOS_HEALTHKIT_WRITE_POC.md.

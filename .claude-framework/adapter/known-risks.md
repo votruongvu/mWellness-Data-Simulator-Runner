@@ -90,3 +90,10 @@ No writer/permission code exists.
   Per the device-QA ground rule + no-fake-success, the **real on-device write cannot be executed or validated**,
   and the POC cannot be declared successful, until a concrete device + named QA owner are provided. Native
   scaffolding/build may proceed; the real write may not. **Do not fabricate a device or claim a successful write.**
+
+## MWR-MRC-003 (2026-06-28) — iOS HealthKit write POC implemented
+- **R-MWR-022 (P1):** a real iOS HealthKit **WRITE path now exists** (native `MwrHealthKit` module),
+  gated by the five-gate chain + explicit confirmation + dev-only scope, and iOS build-verified
+  (compiles/links HealthKit). **Device QA NOT_EXECUTED** — the actual on-device write, the OS permission
+  prompt, and idempotency on re-run are unverified on a real device. **Do not claim a successful real
+  write until a named device runs it.** No fake success; denied/unsupported/invalid are skipped.

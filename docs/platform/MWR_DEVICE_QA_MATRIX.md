@@ -75,3 +75,9 @@ Gates #1/#3/#9/#10 for the iOS HealthKit write POC are human-APPROVED (ADR-MWR-0
 remain **`TO_VERIFY` / `NOT_EXECUTED`** — the approval submitted `<real iPhone model>` / `<version>` / `<name>`
 as unfilled placeholders. The real-write POC still **cannot run or be validated** until a concrete real iPhone +
 iOS version + named QA owner are entered above. Nothing was fabricated.
+
+## MR-C-003 update (2026-06-28) — write POC implemented, device QA still NOT_EXECUTED
+The iOS guarded HealthKit write POC is implemented + **iOS build-verified** (xcodebuild compiles/links
+HealthKit). The real on-device write was **NOT run** — device QA remains **`NOT_EXECUTED`**; a named
+iPhone + iOS version + QA owner are still required to validate the actual write / OS prompt / idempotency
+(the readiness-packet §2 fields remain `TO_VERIFY`). Nothing fabricated; **no real-device pass claimed.**

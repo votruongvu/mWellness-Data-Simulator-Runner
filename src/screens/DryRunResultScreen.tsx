@@ -31,6 +31,7 @@ import {
 } from '../runner/operationDryRun';
 import type {PlanRelativeTime} from '../runner/executionPlan';
 import {ErrorState, LoadingState} from '../shared/components/ScreenStates';
+import {PrimaryButton} from '../shared/components/PrimaryButton';
 import {StatusBadge} from '../shared/components/StatusBadge';
 import {useApiResource} from '../shared/hooks/useApiResource';
 import {colors, fontSize, radius, spacing, StatusKind} from '../shared/theme';
@@ -161,6 +162,21 @@ function OperationDryRun(): React.JSX.Element {
 
         <View style={styles.nextNote}>
           <Text style={styles.nextText}>{result.nextStepNote}</Text>
+        </View>
+
+        {/* MR-C-003 — iOS guarded write POC entry (only reachable after this dry-run). */}
+        <View style={styles.writePocCta}>
+          <PrimaryButton
+            title="Run guarded iOS write POC →"
+            subtitle="iOS only · real write behind the five-gate chain + explicit confirmation"
+            onPress={() =>
+              navigation.navigate('HealthWritePoc', {
+                testCaseId,
+                versionId,
+                dryRunCompleted: true,
+              })
+            }
+          />
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -428,4 +444,5 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm,
   },
   nextText: {color: colors.text, fontSize: fontSize.sm, lineHeight: 20},
+  writePocCta: {marginTop: spacing.sm},
 });

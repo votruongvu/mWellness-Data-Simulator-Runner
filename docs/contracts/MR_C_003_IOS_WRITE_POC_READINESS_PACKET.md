@@ -17,9 +17,12 @@ Implementation of the native scaffolding + the guarded write path may proceed. *
 on-device write + QA sign-off remain BLOCKED** — the §2 device-QA fields were submitted as unfilled
 placeholders, so no real device/owner is named (not fabricated).
 
-> **Implementation attempt 2026-06-28:** an MR-C-003 implementation run was requested and correctly
-> **STOPPED at this device-QA pre-check** (fields still missing) — no native entitlement/Info.plist/
-> module was added. Record: [`MR_C_003_BLOCKED_DEVICE_QA.md`](MR_C_003_BLOCKED_DEVICE_QA.md).
+> **Implementation attempt 2026-06-28 (1):** an MR-C-003 run was requested and correctly **STOPPED at
+> this device-QA pre-check** (fields missing) — no native change. Record: [`MR_C_003_BLOCKED_DEVICE_QA.md`](MR_C_003_BLOCKED_DEVICE_QA.md).
+> **Implementation 2026-06-28 (2):** the owner then explicitly **waived the device-QA pre-block for
+> the internal/dev POC** (record Device QA `NOT_EXECUTED`). MR-C-003 was implemented + **iOS
+> build-verified**; the real on-device write/QA is still pending a named device. Record:
+> [`MR_C_003_IOS_HEALTHKIT_WRITE_POC.md`](MR_C_003_IOS_HEALTHKIT_WRITE_POC.md).
 
 | # | Item | State |
 |---|---|---|

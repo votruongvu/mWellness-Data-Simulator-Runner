@@ -25,6 +25,7 @@ import {VersionScenariosScreen} from '../screens/VersionScenariosScreen';
 import {ExecutionPlanPreviewScreen} from '../screens/ExecutionPlanPreviewScreen';
 import {DryRunResultScreen} from '../screens/DryRunResultScreen';
 import {HealthPermissionScreen} from '../screens/HealthPermissionScreen';
+import {HealthWritePocScreen} from '../screens/HealthWritePocScreen';
 import {BackendUnavailableScreen} from '../screens/errors/BackendUnavailableScreen';
 import {SessionExpiredScreen} from '../screens/errors/SessionExpiredScreen';
 import type {RootStackParamList} from './types';
@@ -89,6 +90,11 @@ export function RootNavigator(): React.JSX.Element {
             name="HealthPermission"
             component={HealthPermissionScreen}
             options={{title: 'Apple Health permission'}}
+          />
+          <Stack.Screen
+            name="HealthWritePoc"
+            component={HealthWritePocScreen}
+            options={{title: 'Guarded write POC'}}
           />
           <Stack.Screen
             name="BackendUnavailable"

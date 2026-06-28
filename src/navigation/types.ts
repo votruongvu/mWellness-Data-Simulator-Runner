@@ -58,4 +58,13 @@ export type RootStackParamList = {
   // MR-C (MWR-MRC-002) — iOS HealthKit capability + permission PREVIEW.
   // No write path; the OS prompt is gated (#1/#3/#9). Final UX/copy is gate-pending.
   HealthPermission: undefined;
+
+  // MR-C-003 — iOS guarded HealthKit write POC (reached after a dry-run).
+  // Real write only after the five-gate chain + explicit confirmation; minimal set.
+  HealthWritePoc: {
+    testCaseId: string;
+    versionId: string;
+    /** Set true when navigated from a completed dry-run. */
+    dryRunCompleted?: boolean;
+  };
 };

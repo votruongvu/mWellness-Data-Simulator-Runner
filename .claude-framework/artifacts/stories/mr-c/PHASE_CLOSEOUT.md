@@ -129,3 +129,13 @@ APPROVED (ADR-MWR-011). Classification: **BLOCKED**. Commit subject: `MR-C block
 Device QA result: **BLOCKED** (cannot run — no real device; no real-device validation implied).
 **MR-C-003 unblocks** when the §2 device/QA fields are filled, then implementation proceeds against
 the MR-C-002 seam. See docs/contracts/MR_C_003_BLOCKED_DEVICE_QA.md.
+
+---
+
+## MWR-MRC-003 — iOS Guarded HealthKit Write POC — 2026-06-28 — IMPLEMENTED (build-verified; device QA NOT_EXECUTED)
+Implemented under approved gates #1/#3/#9/#10 (ADR-MWR-011): TS guarded writer (five-gate enforced, F8
+values only, no fake success, partial≠full), native `MwrHealthKit` Obj-C++ module + HealthKit entitlement
++ Info.plist (approved copy) + framework link, UI write-POC screen, +11 tests. Minimal set = **stepCount
+only**. tsc clean; **jest 72/72**; **iOS xcodebuild (simulator) BUILD SUCCEEDED**. **Device QA NOT_EXECUTED**
+(no real device; no real-device write claimed). iOS only; no Android/MR-D/backend reporting. Commit subject:
+`MR-C STORY-ios-guarded-healthkit-write-poc`. MR-C-004 (Android) BLOCKED. See docs/contracts/MR_C_003_IOS_HEALTHKIT_WRITE_POC.md.

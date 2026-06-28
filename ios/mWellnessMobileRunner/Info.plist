@@ -32,6 +32,10 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>mWellness Runner writes test (sample) health data into Apple Health to replay a backend-validated test scenario on this device. For approved DEV/QA devices only; no personal data is collected.</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>mWellness Runner reads back the test samples it just wrote so it can verify the write actually succeeded (no fake success). For approved DEV/QA devices only.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>UILaunchStoryboardName</key>

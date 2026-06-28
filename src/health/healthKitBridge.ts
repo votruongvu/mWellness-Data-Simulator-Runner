@@ -17,7 +17,7 @@
  */
 
 import {NativeModules, Platform} from 'react-native';
-import type {PerConceptPermission} from './healthPermission';
+import {mapIosShareStatus, type PerConceptPermission} from './healthPermission';
 import type {HealthConceptToken} from './healthKitTypes';
 
 /** Outcome of a guarded permission request. NEVER a fake success. */
@@ -41,6 +41,37 @@ export interface AuthorizationRequestResult {
 }
 
 /**
+ * One quantity sample to write. Values/units/times are the backend F8 payload's
+ * (resolved to absolute ISO via the injected clock) — NEVER fabricated here.
+ */
+export interface NativeWriteSample {
+  readonly operationId: string;
+  /** Concept token (e.g. 'stepCount'); the native module maps it to the HK type. */
+  readonly concept: HealthConceptToken;
+  readonly value: number;
+  readonly unit: string;
+  readonly startTimeIso: string;
+  readonly endTimeIso: string;
+  /** Backend idempotency key — used as the HealthKit sync identifier. */
+  readonly idempotencyKey: string;
+}
+
+/** Per-operation native write status. `succeeded` ONLY if the native save succeeded. */
+export type NativeWriteStatus =
+  | 'succeeded'
+  | 'failed'
+  | 'skipped_permission'
+  | 'skipped_unsupported'
+  | 'skipped_invalid_payload';
+
+export interface NativeWriteResult {
+  readonly operationId: string;
+  readonly status: NativeWriteStatus;
+  /** Native error/skip reason; present for non-succeeded — never implies success. */
+  readonly message?: string;
+}
+
+/**
  * The native seam. Implemented later by the native `MwrHealthKit` module ONLY
  * after gates #1/#3/#9 + device QA. No method here may report success that the
  * platform did not actually return.
@@ -57,6 +88,15 @@ export interface HealthKitBridge {
   requestShareAuthorization(
     tokens: readonly HealthConceptToken[],
   ): Promise<AuthorizationRequestResult>;
+  /**
+   * Guarded native write of quantity samples. The native module re-checks
+   * support + share authorization per sample and only reports `succeeded` when
+   * `HKHealthStore` actually saved it. The TS five-gate chain must already pass
+   * before this is reached (see healthKitWriter.ts). NO fake success.
+   */
+  writeQuantitySamples(
+    samples: readonly NativeWriteSample[],
+  ): Promise<readonly NativeWriteResult[]>;
 }
 
 /** Reason code surfaced when the native bridge is not yet enabled. */
@@ -88,22 +128,75 @@ export const gatePendingBridge: HealthKitBridge = {
         'plus a real iOS device. No OS prompt was shown and nothing was written.',
     };
   },
+  async writeQuantitySamples(
+    samples: readonly NativeWriteSample[],
+  ): Promise<readonly NativeWriteResult[]> {
+    // Native bridge absent → fail closed. NEVER report success.
+    return samples.map(s => ({
+      operationId: s.operationId,
+      status: 'failed' as const,
+      message: `Native HealthKit bridge not available (${NATIVE_BRIDGE_GATE_PENDING}); nothing was written.`,
+    }));
+  },
 };
 
 /**
- * Resolve the active bridge: the native `MwrHealthKit` module when present on
- * iOS, otherwise the fail-closed `gatePendingBridge`. `present` reflects whether
- * a real native module backs the seam (used by the capability evaluation).
+ * The RAW native `MwrHealthKit` module shape. The native side emits the iOS
+ * authorization-status STRINGS verbatim (`sharingAuthorized` / `sharingDenied`
+ * / `notDetermined`); the wrapper below normalizes them to `RawShareAuthorization`
+ * via `mapIosShareStatus`. (Keeping the native side "raw iOS" and normalizing in
+ * TS is the single mapping point — see healthPermission.mapIosShareStatus.)
+ */
+interface RawHealthKitNative {
+  isHealthDataAvailable(): Promise<boolean>;
+  getShareStatus(
+    tokens: readonly HealthConceptToken[],
+  ): Promise<ReadonlyArray<{token: HealthConceptToken; raw: string}>>;
+  requestShareAuthorization(tokens: readonly HealthConceptToken[]): Promise<{
+    outcome: AuthorizationRequestOutcome;
+    perConcept: ReadonlyArray<{token: HealthConceptToken; raw: string}>;
+    reasonCode?: string;
+    message?: string;
+  }>;
+  writeQuantitySamples(
+    samples: readonly NativeWriteSample[],
+  ): Promise<readonly NativeWriteResult[]>;
+}
+
+/** Wrap the raw native module into the normalized `HealthKitBridge`. */
+export function normalizeNativeBridge(native: RawHealthKitNative): HealthKitBridge {
+  return {
+    isHealthDataAvailable: () => native.isHealthDataAvailable(),
+    getShareStatus: async tokens =>
+      (await native.getShareStatus(tokens)).map(p => ({token: p.token, raw: mapIosShareStatus(p.raw)})),
+    requestShareAuthorization: async tokens => {
+      const r = await native.requestShareAuthorization(tokens);
+      return {
+        outcome: r.outcome,
+        perConcept: r.perConcept.map(p => ({token: p.token, raw: mapIosShareStatus(p.raw)})),
+        reasonCode: r.reasonCode,
+        message: r.message,
+      };
+    },
+    writeQuantitySamples: samples => native.writeQuantitySamples(samples),
+  };
+}
+
+/**
+ * Resolve the active bridge: the native `MwrHealthKit` module (normalized) when
+ * present on iOS, otherwise the fail-closed `gatePendingBridge`. `present`
+ * reflects whether a real native module backs the seam.
  */
 export function resolveHealthKitBridge(): {bridge: HealthKitBridge; present: boolean} {
-  const native = (NativeModules as {MwrHealthKit?: HealthKitBridge}).MwrHealthKit;
+  const native = (NativeModules as {MwrHealthKit?: RawHealthKitNative}).MwrHealthKit;
   if (
     Platform.OS === 'ios' &&
     native &&
     typeof native.isHealthDataAvailable === 'function' &&
-    typeof native.requestShareAuthorization === 'function'
+    typeof native.requestShareAuthorization === 'function' &&
+    typeof native.writeQuantitySamples === 'function'
   ) {
-    return {bridge: native, present: true};
+    return {bridge: normalizeNativeBridge(native), present: true};
   }
   return {bridge: gatePendingBridge, present: false};
 }

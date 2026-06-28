@@ -63,6 +63,9 @@ describe('requestPermissionGuarded (no silent prompt)', () => {
         ref.calls += 1;
         return {outcome: 'resolved' as const, perConcept: []};
       },
+      async writeQuantitySamples() {
+        return [];
+      },
     };
     const result = await requestPermissionGuarded(
       state({explanationAcknowledged: false}),
@@ -86,6 +89,9 @@ describe('requestPermissionGuarded (no silent prompt)', () => {
       async requestShareAuthorization() {
         ref.calls += 1;
         return {outcome: 'resolved' as const, perConcept: []};
+      },
+      async writeQuantitySamples() {
+        return [];
       },
     };
     const result = await requestPermissionGuarded(state(), bridge, MRC_APPROVED_CONCEPT_TOKENS);
