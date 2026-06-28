@@ -169,3 +169,14 @@ fabricated.** No native change applied (approval recorded only; `REAL_WRITE_ENAB
 built). MR-C-003 reclassified **READY_WITH_FOLLOWUPS**: native scaffolding + guarded write-path implementation
 MAY begin (builds/simulator need no device); the **real on-device write + QA sign-off remain BLOCKED** until a
 concrete real iPhone + iOS version + named QA owner are provided. See docs/contracts/MR_C_003_IOS_WRITE_POC_READINESS_PACKET.md.
+
+## MR-C update (2026-06-28) — MR-C-003 implementation STOPPED at device-QA pre-check (BLOCKED)
+An MR-C-003 (iOS guarded HealthKit write POC) implementation run was requested. The mandatory
+pre-implementation device-QA check found the required fields **missing** (real iPhone model / iOS
+version / QA owner / Apple ID-provisioning / on-device HealthKit capability — all `TO_VERIFY`
+placeholders; none provided, none fabricated). Per the explicit STOP rule + device-QA ground rule +
+no-fake-success, implementation was **halted before any native change**: NO HealthKit entitlement, NO
+`Info.plist` change, NO native `MwrHealthKit(Writer)` module, NO write, NO prompt. Gates #1/#3/#9/#10
+remain APPROVED (ADR-MWR-011); MR-C-003 stays **READY_WITH_FOLLOWUPS** with the real on-device write
+**BLOCKED** on a named device + owner (R-MWR-021). `REAL_WRITE_ENABLED` still FALSE; no native writer
+exists. See docs/contracts/MR_C_003_BLOCKED_DEVICE_QA.md.

@@ -116,3 +116,16 @@ no production claim, no Android, five-gate chain + no-fake-success enforced). Re
 fabricated.** No native change applied. MR-C-003 reclassified **READY_WITH_FOLLOWUPS**: implementation (native
 entitlement/Info.plist/`MwrHealthKit` module behind the gate chain) MAY begin; the **real on-device write + QA
 sign-off remain BLOCKED** until a concrete real iPhone + iOS version + named QA owner are provided.
+
+---
+
+## MWR-MRC-003 — iOS Guarded HealthKit Write POC — 2026-06-28 — BLOCKED (device QA missing)
+Implementation requested; **STOPPED at the mandatory device-QA pre-check** — the required concrete
+fields (real iPhone model / iOS version / QA owner / Apple ID-provisioning / on-device HealthKit
+capability) are **missing** (`TO_VERIFY` placeholders; none provided, none fabricated). Per the STOP
+rule + device-QA ground rule + no-fake-success: **no HealthKit entitlement, no Info.plist change, no
+native `MwrHealthKit(Writer)` module, no write, no prompt** were added. Gates #1/#3/#9/#10 remain
+APPROVED (ADR-MWR-011). Classification: **BLOCKED**. Commit subject: `MR-C block-ios-write-poc-device-qa`.
+Device QA result: **BLOCKED** (cannot run — no real device; no real-device validation implied).
+**MR-C-003 unblocks** when the §2 device/QA fields are filled, then implementation proceeds against
+the MR-C-002 seam. See docs/contracts/MR_C_003_BLOCKED_DEVICE_QA.md.
