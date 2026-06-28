@@ -58,6 +58,26 @@ export function mapIosShareStatus(iosStatus: string): RawShareAuthorization {
 }
 
 /**
+ * Map an Android Health Connect permission state to the raw model. Health Connect
+ * exposes granted permissions only; the native bridge emits `granted` /
+ * `not_granted` (pre-request) and `denied` (post-request, still not granted). An
+ * unrecognized value maps to `unavailable` (fail-closed), never authorized.
+ */
+export function mapAndroidShareStatus(androidStatus: string): RawShareAuthorization {
+  switch (androidStatus) {
+    case 'granted':
+      return 'sharing_authorized';
+    case 'denied':
+      return 'sharing_denied';
+    case 'not_granted':
+    case 'not_determined':
+      return 'not_determined';
+    default:
+      return 'unavailable';
+  }
+}
+
+/**
  * Summarize per-concept authorizations into the overall status, fail-closed.
  *
  *  - no entries                          → `unknown`

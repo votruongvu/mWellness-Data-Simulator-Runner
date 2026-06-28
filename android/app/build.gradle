@@ -108,6 +108,10 @@ dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
 
+    // MR-C-004 — Android Health Connect guarded writer POC (gate #2 approved, dev/internal).
+    implementation("androidx.health.connect:connect-client:1.1.0-alpha07")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")
     } else {

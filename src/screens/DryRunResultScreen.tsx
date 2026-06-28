@@ -167,8 +167,8 @@ function OperationDryRun(): React.JSX.Element {
         {/* MR-C-003 — iOS guarded write POC entry (only reachable after this dry-run). */}
         <View style={styles.writePocCta}>
           <PrimaryButton
-            title="Run guarded iOS write POC →"
-            subtitle="iOS only · real write behind the five-gate chain + explicit confirmation"
+            title="Run guarded write POC →"
+            subtitle="Real write behind the five-gate chain + explicit confirmation"
             onPress={() =>
               navigation.navigate('HealthWritePoc', {
                 testCaseId,

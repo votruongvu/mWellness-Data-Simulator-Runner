@@ -149,3 +149,15 @@ visibility → idempotency → denied/cancelled). No new native feature / no met
 no backend reporting. Candidate device DETECTED (devicectl): iPhone 13 mini (iPhone14,4), paired.
 **Device QA = NOT_EXECUTED** (interactive steps + signing require a human; no real-device pass claimed);
 codebase not blocked. Runbook: docs/platform/MWR_MR_C_003A_IOS_REALDEVICE_QA_RUNBOOK.md.
+
+---
+
+## MWR-MRC-004 — Android Health Connect Guarded Write POC — 2026-06-28 — IMPLEMENTED (build-verified; device QA NOT_EXECUTED)
+Implemented under approved gate #2 (ADR-MWR-012), mirroring iOS behind the SHARED writer seam: shared TS
+(`resolveHealthBridge` platform selector + `healthCapability` + `mapAndroidShareStatus`), native Kotlin
+`MwrHealthConnect` module (guarded `insertRecords`; no fake success; idempotency via Metadata.clientRecordId)
++ package + registration, gradle (connect-client + coroutines; minSdk 23→26), manifest (WRITE_STEPS +
+queries + rationale), shared write-POC UI, +6 tests. Minimal set = stepCount→StepsRecord. tsc clean; **jest
+78/78**; **`./gradlew :app:assembleDebug` BUILD SUCCESSFUL**. **iOS native UNCHANGED** (no regression).
+**Android Device QA NOT_EXECUTED** (no real device). Android only; no Google Fit/vendor/backend-reporting/MR-D.
+Commit subject: `MR-C STORY-android-health-connect-guarded-write-poc`. See docs/contracts/MR_C_004_ANDROID_HEALTH_CONNECT_WRITE_POC.md.

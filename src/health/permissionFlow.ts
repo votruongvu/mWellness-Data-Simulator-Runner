@@ -12,7 +12,6 @@
  *     a native writer + device QA, none of which exist here).
  */
 
-import type {HealthKitCapability} from './healthKitCapability';
 import type {HealthPermissionStatus} from './healthPermission';
 import type {
   AuthorizationRequestOutcome,
@@ -33,7 +32,8 @@ export type PermissionFlowStep =
 
 export interface PermissionFlowState {
   readonly step: PermissionFlowStep;
-  readonly capability: HealthKitCapability;
+  /** Only `.available` is read here; any capability shape works (iOS or shared). */
+  readonly capability: {readonly available: boolean};
   /** True once the user has SEEN the pre-prompt explanation (gate #3 boundary). */
   readonly explanationAcknowledged: boolean;
   readonly permission: HealthPermissionStatus;

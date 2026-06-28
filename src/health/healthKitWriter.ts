@@ -1,7 +1,9 @@
 /**
- * MR-C-003 — guarded iOS HealthKit write orchestrator.
+ * MR-C-003/004 — guarded health-write orchestrator (SHARED: iOS Apple Health ·
+ * Android Health Connect). Platform-agnostic: it takes a resolved `HealthKitBridge`
+ * (the iOS `MwrHealthKit` or Android `MwrHealthConnect` native module).
  *
- * The ONLY path to a real HealthKit write. It enforces, in order:
+ * The ONLY path to a real health write. It enforces, in order:
  *  1. The five-gate write chain (evaluateWriteGate) — if ANY gate is unmet, NO
  *     native write is attempted at all (the run is blocked).
  *  2. Per-operation classification — only the approved minimal metric set with a

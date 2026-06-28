@@ -205,3 +205,18 @@ feature, no metric expansion, no Android, no backend reporting.** A paired **iPh
 (`iPhone14,4`)** was detected (`devicectl`) as a candidate, but **Device QA = NOT_EXECUTED** — the
 interactive on-device steps + HealthKit signing/provisioning require a human and were not performed;
 no real-device pass claimed. Codebase not blocked (MR-C-003 stays implemented + iOS build-verified).
+
+## MR-C update (2026-06-28) — MWR-MRC-004 Android Health Connect write POC (IMPLEMENTED; build-verified)
+Implemented the Android Health Connect guarded write POC under approved gate #2 (ADR-MWR-012),
+mirroring the iOS POC behind the SHARED writer seam. SHARED TS: `resolveHealthBridge()` selects the
+iOS `MwrHealthKit` or Android `MwrHealthConnect` module (platform separation), `normalizeNativeBridge`
+parametrized by a per-platform status mapper, new `healthCapability.ts` + `mapAndroidShareStatus`; the
+write-POC screen is now shared. NATIVE: Kotlin `MwrHealthConnect` module (getSdkStatus capability,
+getGrantedPermissions status, Health Connect permission ActivityResultContract request, guarded
+`insertRecords` — success ONLY when insert doesn't throw; denied/unsupported/invalid skipped;
+idempotency via Metadata.clientRecordId) + package + MainApplication registration. Gradle:
+connect-client + coroutines; **minSdk 23→26**. Manifest: WRITE_STEPS + queries + rationale entry
+points. Minimal set = **stepCount→StepsRecord**. tsc clean; **jest 78/78**; **`./gradlew :app:assembleDebug`
+BUILD SUCCESSFUL (APK produced)**. **iOS native UNCHANGED** (no regression; shared TS green via tsc+jest).
+**Android Device QA NOT_EXECUTED** (no real device; no real-device write claimed). Android only; no Google
+Fit/vendor; no backend reporting; no MR-D. See docs/contracts/MR_C_004_ANDROID_HEALTH_CONNECT_WRITE_POC.md.

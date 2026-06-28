@@ -90,3 +90,10 @@ paired** — a candidate to confirm as the approved DEV/QA device (iOS version, 
 signing/provisioning, and QA owner remain `TO_VERIFY`). **Device QA remains `NOT_EXECUTED`** — the
 interactive on-device steps + HealthKit signing were not performed by the agent; no real-device pass
 is claimed. A human executes the runbook and records PASS/FAIL there + here.
+
+## MR-C-004 (2026-06-28) — Android Health Connect write POC implemented; device QA NOT_EXECUTED
+The Android Health Connect guarded write POC is implemented + **Android build-verified** (`./gradlew
+:app:assembleDebug` SUCCESSFUL). The real on-device write was **NOT run** — Android device QA remains
+**`NOT_EXECUTED`**; a named **Android device with Health Connect** + OS version + QA owner are required to
+validate the actual write / permission flow / idempotency (still `TO_VERIFY`). Nothing fabricated; **no
+real-device pass claimed.** (A real-device QA runbook analogous to MR-C-003A is a P1 followup.)

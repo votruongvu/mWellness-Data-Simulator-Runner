@@ -17,7 +17,12 @@
  */
 
 import {NativeModules, Platform} from 'react-native';
-import {mapIosShareStatus, type PerConceptPermission} from './healthPermission';
+import {
+  mapAndroidShareStatus,
+  mapIosShareStatus,
+  type PerConceptPermission,
+  type RawShareAuthorization,
+} from './healthPermission';
 import type {HealthConceptToken} from './healthKitTypes';
 
 /** Outcome of a guarded permission request. NEVER a fake success. */
@@ -163,17 +168,24 @@ interface RawHealthKitNative {
   ): Promise<readonly NativeWriteResult[]>;
 }
 
-/** Wrap the raw native module into the normalized `HealthKitBridge`. */
-export function normalizeNativeBridge(native: RawHealthKitNative): HealthKitBridge {
+/**
+ * Wrap the raw native module into the normalized `HealthKitBridge`, using the
+ * platform-specific status mapper (iOS `mapIosShareStatus` by default; Android
+ * passes `mapAndroidShareStatus`).
+ */
+export function normalizeNativeBridge(
+  native: RawHealthKitNative,
+  mapStatus: (raw: string) => RawShareAuthorization = mapIosShareStatus,
+): HealthKitBridge {
   return {
     isHealthDataAvailable: () => native.isHealthDataAvailable(),
     getShareStatus: async tokens =>
-      (await native.getShareStatus(tokens)).map(p => ({token: p.token, raw: mapIosShareStatus(p.raw)})),
+      (await native.getShareStatus(tokens)).map(p => ({token: p.token, raw: mapStatus(p.raw)})),
     requestShareAuthorization: async tokens => {
       const r = await native.requestShareAuthorization(tokens);
       return {
         outcome: r.outcome,
-        perConcept: r.perConcept.map(p => ({token: p.token, raw: mapIosShareStatus(p.raw)})),
+        perConcept: r.perConcept.map(p => ({token: p.token, raw: mapStatus(p.raw)})),
         reasonCode: r.reasonCode,
         message: r.message,
       };
@@ -182,21 +194,51 @@ export function normalizeNativeBridge(native: RawHealthKitNative): HealthKitBrid
   };
 }
 
+function hasBridgeShape(n: RawHealthKitNative | undefined): n is RawHealthKitNative {
+  return (
+    !!n &&
+    typeof n.isHealthDataAvailable === 'function' &&
+    typeof n.requestShareAuthorization === 'function' &&
+    typeof n.writeQuantitySamples === 'function'
+  );
+}
+
 /**
  * Resolve the active bridge: the native `MwrHealthKit` module (normalized) when
- * present on iOS, otherwise the fail-closed `gatePendingBridge`. `present`
- * reflects whether a real native module backs the seam.
+ * present on iOS, otherwise the fail-closed `gatePendingBridge`. iOS-only entry
+ * kept for the MR-C-002 preview screen; the shared write path uses
+ * {@link resolveHealthBridge}.
  */
 export function resolveHealthKitBridge(): {bridge: HealthKitBridge; present: boolean} {
   const native = (NativeModules as {MwrHealthKit?: RawHealthKitNative}).MwrHealthKit;
-  if (
-    Platform.OS === 'ios' &&
-    native &&
-    typeof native.isHealthDataAvailable === 'function' &&
-    typeof native.requestShareAuthorization === 'function' &&
-    typeof native.writeQuantitySamples === 'function'
-  ) {
-    return {bridge: normalizeNativeBridge(native), present: true};
+  if (Platform.OS === 'ios' && hasBridgeShape(native)) {
+    return {bridge: normalizeNativeBridge(native, mapIosShareStatus), present: true};
   }
   return {bridge: gatePendingBridge, present: false};
+}
+
+/**
+ * Platform-agnostic resolver for the shared write path. Selects the native
+ * `MwrHealthKit` (iOS) or `MwrHealthConnect` (Android) module — never both, so
+ * the iOS path can't reach the Android bridge or vice-versa — else the
+ * fail-closed `gatePendingBridge`.
+ */
+export function resolveHealthBridge(): {
+  bridge: HealthKitBridge;
+  present: boolean;
+  platform: 'ios' | 'android' | 'unknown';
+} {
+  if (Platform.OS === 'ios') {
+    const native = (NativeModules as {MwrHealthKit?: RawHealthKitNative}).MwrHealthKit;
+    return hasBridgeShape(native)
+      ? {bridge: normalizeNativeBridge(native, mapIosShareStatus), present: true, platform: 'ios'}
+      : {bridge: gatePendingBridge, present: false, platform: 'ios'};
+  }
+  if (Platform.OS === 'android') {
+    const native = (NativeModules as {MwrHealthConnect?: RawHealthKitNative}).MwrHealthConnect;
+    return hasBridgeShape(native)
+      ? {bridge: normalizeNativeBridge(native, mapAndroidShareStatus), present: true, platform: 'android'}
+      : {bridge: gatePendingBridge, present: false, platform: 'android'};
+  }
+  return {bridge: gatePendingBridge, present: false, platform: 'unknown'};
 }

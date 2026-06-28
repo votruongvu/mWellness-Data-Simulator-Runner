@@ -8,6 +8,7 @@
  */
 import {render, screen} from '@testing-library/react-native';
 import React from 'react';
+import {Platform} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {HealthWritePocScreen} from '../../src/screens/HealthWritePocScreen';
@@ -63,5 +64,19 @@ describe('HealthWritePocScreen', () => {
     // No native module in jest → capability unavailable → write is BLOCKED.
     expect(screen.getByText('Run guarded write POC')).toBeTruthy();
     expect(screen.getByText(/Blocked — unmet:/)).toBeTruthy();
+  });
+
+  it('on Android, the SHARED screen shows the Health Connect write target and fail-closes', async () => {
+    Object.defineProperty(Platform, 'OS', {value: 'android', configurable: true});
+    try {
+      renderScreen();
+      expect(await screen.findByText('Guarded write POC')).toBeTruthy();
+      // The shared screen resolves the Android destination (never "Google HealthKit"/Google Fit).
+      expect(screen.getByText('Health Connect')).toBeTruthy();
+      // No MwrHealthConnect module in jest → capability unavailable → write BLOCKED.
+      expect(screen.getByText(/Blocked — unmet:/)).toBeTruthy();
+    } finally {
+      Object.defineProperty(Platform, 'OS', {value: 'ios', configurable: true});
+    }
   });
 });

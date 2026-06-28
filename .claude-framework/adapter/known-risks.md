@@ -97,3 +97,13 @@ No writer/permission code exists.
   (compiles/links HealthKit). **Device QA NOT_EXECUTED** — the actual on-device write, the OS permission
   prompt, and idempotency on re-run are unverified on a real device. **Do not claim a successful real
   write until a named device runs it.** No fake success; denied/unsupported/invalid are skipped.
+
+## MWR-MRC-004 (2026-06-28) — Android Health Connect write POC implemented
+- **R-MWR-023 (P1):** a real Android Health Connect **WRITE path now exists** (native `MwrHealthConnect`
+  module), gated by the five-gate chain + explicit confirmation + dev-only scope, and Android
+  build-verified (`assembleDebug` SUCCESSFUL). **Device QA NOT_EXECUTED** — the actual on-device write,
+  the Health Connect permission flow, and idempotency are unverified on a real device; **do not claim a
+  successful real write until a named device runs it.** No fake success; denied/unsupported/invalid skipped.
+- **R-MWR-024 (P1):** **minSdk raised 23→26** for the Health Connect connect-client (drops Android 7.x).
+  Confirm this is acceptable for the product, or gate Health Connect behind a runtime/availability check
+  while keeping a lower minSdk via manifest override.

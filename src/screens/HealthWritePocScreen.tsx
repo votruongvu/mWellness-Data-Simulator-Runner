@@ -1,9 +1,11 @@
 /**
- * MR-C-003 — iOS Guarded HealthKit Write POC screen.
+ * MR-C-003/004 — SHARED guarded health-write POC screen.
  *
- * Reached AFTER a dry-run. Walks the five-gate write chain to a single guarded
- * HealthKit write of the minimal metric set (stepCount), using ONLY backend F8
- * payload values. Safety, all enforced + visible:
+ * One screen for both platforms via `resolveHealthBridge` (iOS → Apple Health /
+ * `MwrHealthKit`; Android → Health Connect / `MwrHealthConnect`). Reached AFTER a
+ * dry-run. Walks the five-gate write chain to a single guarded health write of the
+ * minimal metric set (stepCount), using ONLY backend F8 payload values. Safety,
+ * all enforced + visible:
  *   - The "Run guarded write" button is DISABLED until all five gates pass.
  *   - Permission goes through the explain-before-prompt guard (no silent prompt).
  *   - Real-write mode: danger banner + the approved confirm copy + a confirm checkbox.
@@ -16,7 +18,7 @@
 import {useNavigation, useRoute, type RouteProp} from '@react-navigation/native';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useSession} from '../auth/SessionContext';
 import {buildExecutionPlanFromPayload} from '../runner/operationPlan';
@@ -27,9 +29,9 @@ import {PrimaryButton} from '../shared/components/PrimaryButton';
 import {StatusBadge} from '../shared/components/StatusBadge';
 import {useApiResource} from '../shared/hooks/useApiResource';
 import {colors, fontSize, radius, spacing, StatusKind} from '../shared/theme';
-import {evaluateHealthKitCapability, type HealthKitCapability} from '../health/healthKitCapability';
+import {evaluateHealthCapability, type HealthCapability} from '../health/healthCapability';
 import {summarizeHealthPermission, type HealthPermissionStatus} from '../health/healthPermission';
-import {resolveHealthKitBridge, type HealthKitBridge} from '../health/healthKitBridge';
+import {resolveHealthBridge, type HealthKitBridge} from '../health/healthKitBridge';
 import {
   canRequestPermission,
   evaluateWriteGate,
@@ -47,7 +49,6 @@ import type {RootStackParamList} from '../navigation/types';
 type Nav = NativeStackNavigationProp<RootStackParamList, 'HealthWritePoc'>;
 type Rt = RouteProp<RootStackParamList, 'HealthWritePoc'>;
 
-const CONFIRM_COPY = 'I understand this writes real test data to Apple Health on this device.';
 const WARN_COPY =
   'This will write test data to your health platform. Use only on approved DEV/QA devices and accounts.';
 
@@ -60,7 +61,7 @@ export function HealthWritePocScreen(): React.JSX.Element {
   const payload = useApiResource(() => getRunnablePayload(testCaseId, versionId), [testCaseId, versionId]);
 
   const [bridge, setBridge] = useState<HealthKitBridge | null>(null);
-  const [capability, setCapability] = useState<HealthKitCapability | null>(null);
+  const [capability, setCapability] = useState<HealthCapability | null>(null);
   const [permission, setPermission] = useState<HealthPermissionStatus>('unknown');
   const [explanationAck, setExplanationAck] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
@@ -83,17 +84,15 @@ export function HealthWritePocScreen(): React.JSX.Element {
   // Resolve bridge + capability + current permission once. No prompt fired.
   useEffect(() => {
     let cancelled = false;
-    const {bridge: resolved, present} = resolveHealthKitBridge();
+    const {bridge: resolved, present, platform} = resolveHealthBridge();
     void (async () => {
       const nativeIsAvailable = await resolved.isHealthDataAvailable().catch(() => null);
       const status = await resolved.getShareStatus(MRC_003_WRITABLE_CONCEPTS).catch(() => []);
       if (cancelled) {
         return;
       }
-      const os: 'ios' | 'android' | 'unknown' =
-        Platform.OS === 'ios' ? 'ios' : Platform.OS === 'android' ? 'android' : 'unknown';
       setBridge(resolved);
-      setCapability(evaluateHealthKitCapability({os, bridgePresent: present, nativeIsAvailable}));
+      setCapability(evaluateHealthCapability({platform, bridgePresent: present, nativeIsAvailable}));
       setPermission(summarizeHealthPermission(status));
     })();
     return () => {
@@ -127,13 +126,13 @@ export function HealthWritePocScreen(): React.JSX.Element {
 
   const flowState: PermissionFlowState = {
     step: 'capability_checked',
-    capability:
-      capability ??
-      ({available: false, reason: 'unknown', summary: 'Checking…'} as HealthKitCapability),
+    capability: capability ?? {available: false},
     explanationAcknowledged: explanationAck,
     permission,
   };
   const permGuard = canRequestPermission(flowState);
+  const destLabel = capability?.destinationLabel ?? 'your health platform';
+  const confirmCopy = `I understand this writes real test data to ${destLabel} on this device.`;
 
   const onRequestPermission = useCallback(async () => {
     if (!bridge) {
@@ -213,7 +212,8 @@ export function HealthWritePocScreen(): React.JSX.Element {
         </View>
 
         <View style={styles.card}>
-          <Row label="Target" value={plan.targetLabel} />
+          <Row label="Write target" value={destLabel} />
+          <Row label="Payload target" value={plan.targetLabel} />
           <Row label="Minimal set" value={MRC_003_WRITABLE_CONCEPTS.join(', ')} />
           <Row label="Writable ops (steps)" value={String(writableOps.length)} />
         </View>
@@ -227,7 +227,7 @@ export function HealthWritePocScreen(): React.JSX.Element {
               label={capability ? (capability.available ? 'available' : capability.reason) : 'checking…'}
             />
           </View>
-          <Text style={styles.muted}>{capability?.summary ?? 'Checking HealthKit availability…'}</Text>
+          <Text style={styles.muted}>{capability?.summary ?? 'Checking health-store availability…'}</Text>
           <View style={styles.rowBetween}>
             <Text style={styles.cardTitle}>Permission (write)</Text>
             <StatusBadge kind={permission === 'granted' ? 'ok' : 'warn'} label={permission} />
@@ -235,14 +235,14 @@ export function HealthWritePocScreen(): React.JSX.Element {
           {!explanationAck ? (
             <>
               <Text style={styles.muted}>
-                Before the iOS prompt: this requests permission to WRITE steps to Apple Health.
+                Before the OS prompt: this requests permission to WRITE steps to {destLabel}.
                 Denied types are skipped. Nothing is written until you confirm below.
               </Text>
               <PrimaryButton title="I understand — continue" variant="secondary" onPress={() => setExplanationAck(true)} />
             </>
           ) : (
             <PrimaryButton
-              title="Request HealthKit permission"
+              title="Request write permission"
               variant="secondary"
               loading={busy}
               disabled={!permGuard.allowed || permission === 'granted'}
@@ -273,7 +273,7 @@ export function HealthWritePocScreen(): React.JSX.Element {
           <View style={[styles.checkbox, confirmed && styles.checkboxOn]}>
             {confirmed ? <Text style={styles.checkmark}>✓</Text> : null}
           </View>
-          <Text style={styles.confirmText}>{CONFIRM_COPY}</Text>
+          <Text style={styles.confirmText}>{confirmCopy}</Text>
         </TouchableOpacity>
 
         {/* The guarded write action */}
@@ -335,7 +335,7 @@ function ResultSummary({summary}: {summary: WriteSummary}): React.JSX.Element {
           <Row label="Skipped · unsupported" value={String(summary.counts.skipped_unsupported)} />
           <Row label="Skipped · invalid payload" value={String(summary.counts.skipped_invalid_payload)} />
           <Text style={styles.muted}>
-            Success counts reflect the actual native HealthKit result only. Partial success is not success.
+            Success counts reflect the actual native result only. Partial success is not success.
             Written samples are not reversible.
           </Text>
         </>
