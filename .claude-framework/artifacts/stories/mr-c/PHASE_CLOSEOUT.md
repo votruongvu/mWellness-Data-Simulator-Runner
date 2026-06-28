@@ -67,3 +67,14 @@ template/bootstrap-only, **no HealthKit/Health Connect/writer/permission code**.
 24/24; full native build NOT run (documented blockers). Substrate **PRESENT**; PAYLOAD_READY;
 DTO READY. **MR-C stories 002–005 remain BLOCKED/NOT-STARTED** pending gates #1/#2/#3 + device QA
 (NOT_EXECUTED). See docs/platform/MWR_NATIVE_SUBSTRATE_BOOTSTRAP.md.
+
+---
+
+## NATIVE BUILD VERIFICATION — 2026-06-28 (one-off; not a loop run)
+Substrate **PRESENT + `BUILD_VERIFIED`**: iOS pod install (58 pods) + `xcodebuild` simulator →
+`** BUILD SUCCEEDED **` (`.app`); Android `./gradlew :app:assembleDebug` → `BUILD SUCCESSFUL`
+(`app-debug.apk`), both from source under node 25. Only change: a `Gemfile` Ruby-3.4 toolchain fix
+(CocoaPods ≥ 1.16 + `nkf`); committed `Gemfile`/`Gemfile.lock`/`ios/Podfile.lock`. tsc clean; jest
+24/24. **No native writer/HealthKit/Health Connect/permission code added.** BUILD-ONLY — **device QA
+remains NOT_EXECUTED**. **MR-C stories 002–005 remain BLOCKED** pending gates #1/#2/#3 + device QA.
+See docs/platform/MWR_NATIVE_BUILD_VERIFICATION.md.

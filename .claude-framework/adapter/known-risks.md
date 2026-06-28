@@ -65,3 +65,12 @@ human-approved hard-gate #9 — template/bootstrap-only, no writer/permission co
 NOT run; node v25.1.0 is newer than RN 0.74's tested range — use node 20 LTS if the native build
 fails). No real write may occur: gates #1/#2/#3 (real Apple Health / Health Connect writes +
 permission prompt) remain pending and device QA remains NOT_EXECUTED.
+
+## R-MWR-016 update (2026-06-28) — native substrate BUILD_VERIFIED
+The native substrate now **builds from source on both platforms** (iOS `xcodebuild` simulator
+`.app`; Android `gradle assembleDebug` `.apk`), under node v25.1.0 — the prior "full native build
+unverified / node-25 caveat" residual is **resolved for builds**. A Ruby-3.4 `Gemfile` toolchain
+fix was required (CocoaPods ≥ 1.16 + `nkf` for the `kconv` lib Ruby 3.4 dropped). **Remaining (P1):**
+this is **build/compile only — NOT a runtime/device QA pass** (the `.app`/`.apk` were not run);
+**device QA remains NOT_EXECUTED** and real writes still require gates #1/#2/#3 + real devices.
+No writer/permission code exists.

@@ -37,18 +37,25 @@ npx @react-native-community/cli@13.6.9 init mWellnessMobileRunner \
 | `eslint` | **still crashing** — pre-existing `prettier`/`eslint-plugin-prettier` mismatch (unrelated to substrate; P1). |
 | git hygiene | no generated dir staged (node_modules/Pods/build/.gradle/local.properties); `debug.keystore` committable; `gradlew` executable. |
 
-## Native build status — NOT executed (honest blockers)
-A **full native build was not run**. Blockers (toolchain IS present — Xcode 26.0.1, CocoaPods 1.16.2, Android SDK at `~/Library/Android/sdk`):
+## Native build status — ✅ VERIFIED (2026-06-28)
+**Full native build VERIFIED on both platforms** — iOS `xcodebuild` (simulator) →
+`** BUILD SUCCEEDED **` (`.app` produced); Android `./gradlew :app:assembleDebug` →
+`BUILD SUCCESSFUL` (`app-debug.apk` produced); both under node v25.1.0. Required a
+Ruby-3.4 `Gemfile` toolchain fix (CocoaPods ≥ 1.16 + `nkf`). **Build/compile only —
+NOT a runtime/device QA pass.** Full record:
+[`MWR_NATIVE_BUILD_VERIFICATION.md`](MWR_NATIVE_BUILD_VERIFICATION.md).
+
+*(Original deferral notes below — now superseded by the verification above. Toolchain present — Xcode 26.0.1, CocoaPods 1.16.2, Android SDK at `~/Library/Android/sdk`:)*
 - **iOS:** `bundle exec pod install` (network-heavy; generates `ios/Pods` + `Podfile.lock` + `.xcworkspace`) then `xcodebuild` (needs a signing identity / simulator) — deferred to keep this patch focused and avoid committing large generated artifacts.
 - **Android:** `./gradlew assembleDebug` (network-heavy gradle dependency resolution + build-tools) — deferred.
 - **Node version caveat:** the machine runs **node v25.1.0**, newer than RN 0.74.5's tested range (>=18, LTS 18/20). JS-side `tsc`/`jest`/`react-native config` all passed under node 25, but a **full native bundle/build under node 25 is unverified** — if it fails, use node 20 LTS (nvm) for the native build.
 - **No simulator/emulator/device QA was run or claimed.**
 
 ## State after this task
-- **Native substrate: PRESENT** (`ios/` + `android/`). · Hard-gate #9: **APPROVED** (this task).
+- **Native substrate: PRESENT + `BUILD_VERIFIED`** (`ios/` + `android/`; both compile/package from source — 2026-06-28, see [`MWR_NATIVE_BUILD_VERIFICATION.md`](MWR_NATIVE_BUILD_VERIFICATION.md)). · Hard-gate #9: **APPROVED** (this task).
 - **Payload gate: `PAYLOAD_READY`** (live-verified, commit `aded38a`). · **DTO consuming path: READY** (`R-MWR-019` done, commit `e600a39`).
 - **Native write POCs (MR-C stories 002–005): still BLOCKED** — pending human-approval gates **#1** (real Apple Health write), **#2** (real Health Connect write), **#3** (permission-prompt timing/copy), and a populated **device QA matrix** (still `NOT_EXECUTED`). **No** native writer/permission code exists.
 
 ## Next recommended task
-1. **Native build verification** (developer machine, ideally node 20 LTS): `bundle exec pod install` + a debug `xcodebuild`/`gradlew assembleDebug` to confirm the substrate compiles/runs (no device write).
+1. ~~**Native build verification**~~ ✅ **DONE 2026-06-28** — both platforms `BUILD_VERIFIED` (iOS `.app` + Android `.apk` compile/package from source under node 25; see [`MWR_NATIVE_BUILD_VERIFICATION.md`](MWR_NATIVE_BUILD_VERIFICATION.md)).
 2. Then **MR-C story 002** (iOS HealthKit capability + permission bridge) — a **hard-gated** step (#1/#3) that still implements **no** write until approved, plus the device QA matrix is populated for MR-C-003/004 real-write POCs.
