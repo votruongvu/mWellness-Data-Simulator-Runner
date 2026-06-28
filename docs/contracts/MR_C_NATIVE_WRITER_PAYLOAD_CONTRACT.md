@@ -7,7 +7,7 @@
 > **Backend F8 added `GET /api/v1/test-cases/{id}/versions/{version_id}/runnable-payload`,
 > which returns concrete per-operation values.** This patch verified and consumed it.
 >
-> **Status: `PAYLOAD_VERIFIED` (route + mobile consuming path) — live-authenticated fetch PENDING.**
+> **Status (reconciled 2026-06-28): `PAYLOAD_PARTIAL`** — F8 route present + mobile consuming path implemented/guarded, but **concrete per-operation values are NOT yet verified from repo state** (no captured/observed real response; only a synthetic test fixture). Not `PAYLOAD_READY` until an authenticated live fetch confirms concrete values. See [`MR_C_PAYLOAD_RECONCILIATION_AUDIT.md`](MR_C_PAYLOAD_RECONCILIATION_AUDIT.md). (Earlier this was scoped as "PAYLOAD_VERIFIED (route + consuming path) — live-auth PENDING"; same facts, strict taxonomy.)
 > - F8 route **verified present** live: `GET …/runnable-payload` → `401` (registered, auth-gated; a non-existent id also returns 401, not 404).
 > - Mobile now has a typed client (`getRunnablePayload`) + DTOs + an adapter guard, an **operation-level execution plan** (`buildExecutionPlanFromPayload`, the **preferred** MR-C input), and an **operation-level dry-run** (`simulateDryRunFromPayload`, strictly no-write) consuming concrete `value/unit/start_time/end_time/idempotency_key/operation_id`.
 > - **No fabrication:** an operation missing a required concrete field → classified `invalid` with a `reason_code` (`MISSING_VALUE`/`MISSING_UNIT`/`MISSING_TIME`/`MISSING_IDEMPOTENCY_KEY`/`MISSING_METRIC_REF`) — never dropped, never back-filled.
