@@ -81,3 +81,12 @@ The iOS guarded HealthKit write POC is implemented + **iOS build-verified** (xco
 HealthKit). The real on-device write was **NOT run** — device QA remains **`NOT_EXECUTED`**; a named
 iPhone + iOS version + QA owner are still required to validate the actual write / OS prompt / idempotency
 (the readiness-packet §2 fields remain `TO_VERIFY`). Nothing fabricated; **no real-device pass claimed.**
+
+## MR-C-003A runbook (2026-06-28) — real-device QA defined; NOT_EXECUTED
+A real-device QA **runbook** for the iOS HealthKit write POC is authored:
+[`MWR_MR_C_003A_IOS_REALDEVICE_QA_RUNBOOK.md`](MWR_MR_C_003A_IOS_REALDEVICE_QA_RUNBOOK.md).
+**Candidate device DETECTED** on the build Mac via `devicectl`: **iPhone 13 mini (`iPhone14,4`),
+paired** — a candidate to confirm as the approved DEV/QA device (iOS version, Developer Mode,
+signing/provisioning, and QA owner remain `TO_VERIFY`). **Device QA remains `NOT_EXECUTED`** — the
+interactive on-device steps + HealthKit signing were not performed by the agent; no real-device pass
+is claimed. A human executes the runbook and records PASS/FAIL there + here.

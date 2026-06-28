@@ -139,3 +139,13 @@ values only, no fake success, partial≠full), native `MwrHealthKit` Obj-C++ mod
 only**. tsc clean; **jest 72/72**; **iOS xcodebuild (simulator) BUILD SUCCEEDED**. **Device QA NOT_EXECUTED**
 (no real device; no real-device write claimed). iOS only; no Android/MR-D/backend reporting. Commit subject:
 `MR-C STORY-ios-guarded-healthkit-write-poc`. MR-C-004 (Android) BLOCKED. See docs/contracts/MR_C_003_IOS_HEALTHKIT_WRITE_POC.md.
+
+---
+
+## MR-C-003A — iOS HealthKit Real-Device QA Runbook — 2026-06-28 (docs only; Device QA NOT_EXECUTED)
+Authored the real-device QA runbook + checklist for the iOS HealthKit write POC (availability →
+explain-before-prompt → OS prompt → grant → one stepCount write from F8 → result → Apple Health
+visibility → idempotency → denied/cancelled). No new native feature / no metric expansion / no Android /
+no backend reporting. Candidate device DETECTED (devicectl): iPhone 13 mini (iPhone14,4), paired.
+**Device QA = NOT_EXECUTED** (interactive steps + signing require a human; no real-device pass claimed);
+codebase not blocked. Runbook: docs/platform/MWR_MR_C_003A_IOS_REALDEVICE_QA_RUNBOOK.md.

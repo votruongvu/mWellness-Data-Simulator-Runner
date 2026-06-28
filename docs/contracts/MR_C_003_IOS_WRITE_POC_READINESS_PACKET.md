@@ -66,6 +66,11 @@ were not fabricated.** Fill these before B5 can clear (mirror into
 > (`<real iPhone model>` / `<version>` / `<name>`). They remain `TO_VERIFY` — the real on-device
 > write and QA sign-off **cannot proceed** until a concrete device + iOS version + named owner are
 > provided. Nothing was fabricated to fill them.
+> **Update 2026-06-28 (MR-C-003A):** a **candidate device was detected** on the build Mac
+> (`devicectl`): **iPhone 13 mini (`iPhone14,4`), paired** — to confirm as the approved DEV/QA
+> device (iOS version / Developer Mode / signing / owner still `TO_VERIFY`). The real-device QA
+> runbook is ready ([`../platform/MWR_MR_C_003A_IOS_REALDEVICE_QA_RUNBOOK.md`](../platform/MWR_MR_C_003A_IOS_REALDEVICE_QA_RUNBOOK.md));
+> **Device QA remains `NOT_EXECUTED`** (a human runs it).
 
 | Field | Proposed target (confirm) | Filled value |
 |---|---|---|

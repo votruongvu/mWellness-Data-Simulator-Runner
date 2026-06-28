@@ -196,3 +196,12 @@ fixed: `concept` C++20 keyword → `conceptName`; framework explicitly linked). 
 exists but is gated + dev-only. **Device QA NOT_EXECUTED** (no real device; runtime write not run/claimed).
 iOS only; no Android; no backend run reporting; no MR-D. MR-C-004 (Android) BLOCKED.
 See docs/contracts/MR_C_003_IOS_HEALTHKIT_WRITE_POC.md.
+
+## MR-C update (2026-06-28) — MR-C-003A iOS real-device QA runbook (docs only; Device QA NOT_EXECUTED)
+Authored the iOS HealthKit real-device QA **runbook + checklist** (docs/platform/MWR_MR_C_003A_IOS_REALDEVICE_QA_RUNBOOK.md):
+install → availability → explain-before-prompt → OS prompt → grant → one stepCount write from the F8
+payload → result status → Apple Health visibility → idempotency → denied/cancelled. **No new native
+feature, no metric expansion, no Android, no backend reporting.** A paired **iPhone 13 mini
+(`iPhone14,4`)** was detected (`devicectl`) as a candidate, but **Device QA = NOT_EXECUTED** — the
+interactive on-device steps + HealthKit signing/provisioning require a human and were not performed;
+no real-device pass claimed. Codebase not blocked (MR-C-003 stays implemented + iOS build-verified).

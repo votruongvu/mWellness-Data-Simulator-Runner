@@ -49,3 +49,10 @@
 - Health-write safety / gate chain + human-approval gates: [`../safety/MOBILE_HEALTH_WRITE_SAFETY.md`](../safety/MOBILE_HEALTH_WRITE_SAFETY.md)
 - Execution model / run state machine: [`../contracts/MOBILE_SCENARIO_EXECUTION_MODEL.md`](../contracts/MOBILE_SCENARIO_EXECUTION_MODEL.md)
 - Validation guide (automated): [`MWR_VALIDATION_GUIDE.md`](MWR_VALIDATION_GUIDE.md)
+
+## MR-C-003A — iOS HealthKit real-device QA (runbook)
+The iOS guarded HealthKit write POC has a dedicated real-device QA runbook + checklist:
+[`MWR_MR_C_003A_IOS_REALDEVICE_QA_RUNBOOK.md`](MWR_MR_C_003A_IOS_REALDEVICE_QA_RUNBOOK.md)
+(availability → explain-before-prompt → OS prompt → grant → one stepCount write from the F8
+payload → result status → Apple Health visibility → idempotency → denied/cancelled paths).
+**Status: `NOT_EXECUTED`** — a human runs it on a real iPhone and records the result there.
