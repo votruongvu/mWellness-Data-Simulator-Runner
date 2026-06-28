@@ -51,3 +51,14 @@ redaction (no tokens/PHI in logs).
 this matrix names concrete devices/OS versions and a real-device QA owner.** Linked
 from the roadmap ([`../roadmap/MOBILE_RUNNER_PHASE_ROADMAP.md`](../roadmap/MOBILE_RUNNER_PHASE_ROADMAP.md))
 and the health-write safety doc ([`../safety/MOBILE_HEALTH_WRITE_SAFETY.md`](../safety/MOBILE_HEALTH_WRITE_SAFETY.md)).
+
+## MR-C-002 update (2026-06-28) — capability/permission seam (no device QA executed)
+MWR-MRC-002 added the iOS HealthKit capability + permission **seam** (TS-only; no native
+module, no entitlement, no prompt). Verifiable **without** a real device (unit tests /
+simulator UI): capability negative paths (non-iOS / bridge-absent / unavailable_device),
+the permission STATUS model (granted/partial/denied/not_requested/unavailable/unknown),
+explain-before-prompt enforcement, and the gated bridge's no-fake-success. Still requires a
+**real iPhone** (and gates #1/#3/#9): the live HealthKit availability check, the real
+permission prompt, idempotency, and any real write. **Manual/device QA remains `NOT_EXECUTED`;
+a named iPhone + iOS version + QA owner remain `TO_VERIFY` (none available — not fabricated).**
+The MR-C-003 real-write POC stays BLOCKED until this matrix names a concrete device + owner.

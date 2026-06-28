@@ -71,6 +71,17 @@ export function DashboardScreen(): React.JSX.Element {
           />
         </View>
 
+        {/* MR-C (MWR-MRC-002) — iOS HealthKit capability/permission PREVIEW.
+            No write path; the OS prompt is gated. */}
+        <View style={styles.section}>
+          <PrimaryButton
+            title="iOS HealthKit permission (preview)"
+            variant="secondary"
+            subtitle="Capability + permission status · no write · prompt gated"
+            onPress={() => navigation.navigate('HealthPermission')}
+          />
+        </View>
+
         {/* Diagnostics (placeholder) + Logout (works). */}
         <View style={styles.section}>
           <PrimaryButton

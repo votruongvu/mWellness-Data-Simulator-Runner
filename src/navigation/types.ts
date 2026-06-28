@@ -54,4 +54,8 @@ export type RootStackParamList = {
     /** MR-C — same operation-level vs metric-level selector as the preview. */
     planSource?: 'operation' | 'metric';
   };
+
+  // MR-C (MWR-MRC-002) — iOS HealthKit capability + permission PREVIEW.
+  // No write path; the OS prompt is gated (#1/#3/#9). Final UX/copy is gate-pending.
+  HealthPermission: undefined;
 };

@@ -74,3 +74,12 @@ fix was required (CocoaPods ≥ 1.16 + `nkf` for the `kconv` lib Ruby 3.4 droppe
 this is **build/compile only — NOT a runtime/device QA pass** (the `.app`/`.apk` were not run);
 **device QA remains NOT_EXECUTED** and real writes still require gates #1/#2/#3 + real devices.
 No writer/permission code exists.
+
+## MWR-MRC-002 (2026-06-28) — iOS HealthKit capability/permission seam
+- **R-MWR-020 (P1):** the iOS HealthKit native bridge is a **SEAM only** — `resolveHealthKitBridge`
+  returns a fail-closed `gatePendingBridge` (reports unavailable; returns `gate_pending`, never
+  success). Real capability/permission requires the native `MwrHealthKit` module + gates #1/#3/#9
+  + a real device. No silent prompt: `requestPermissionGuarded` cannot reach the native prompt
+  without explain-before-prompt + capability, even if a native module is later installed. The
+  five-gate chain + no-fake-success are preserved; no write path exists. The on-screen pre-prompt
+  explanation copy is **DRAFT** pending gate #3.

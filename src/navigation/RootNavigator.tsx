@@ -24,6 +24,7 @@ import {TestCaseDetailScreen} from '../screens/TestCaseDetailScreen';
 import {VersionScenariosScreen} from '../screens/VersionScenariosScreen';
 import {ExecutionPlanPreviewScreen} from '../screens/ExecutionPlanPreviewScreen';
 import {DryRunResultScreen} from '../screens/DryRunResultScreen';
+import {HealthPermissionScreen} from '../screens/HealthPermissionScreen';
 import {BackendUnavailableScreen} from '../screens/errors/BackendUnavailableScreen';
 import {SessionExpiredScreen} from '../screens/errors/SessionExpiredScreen';
 import type {RootStackParamList} from './types';
@@ -83,6 +84,11 @@ export function RootNavigator(): React.JSX.Element {
             name="DryRunResult"
             component={DryRunResultScreen}
             options={{title: 'Dry-run result'}}
+          />
+          <Stack.Screen
+            name="HealthPermission"
+            component={HealthPermissionScreen}
+            options={{title: 'Apple Health permission'}}
           />
           <Stack.Screen
             name="BackendUnavailable"

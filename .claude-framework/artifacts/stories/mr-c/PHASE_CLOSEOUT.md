@@ -81,3 +81,17 @@ Substrate **PRESENT + `BUILD_VERIFIED`**: iOS pod install (58 pods) + `xcodebuil
 24/24. **No native writer/HealthKit/Health Connect/permission code added.** BUILD-ONLY — **device QA
 remains NOT_EXECUTED**. **MR-C stories 002–005 remain BLOCKED** pending gates #1/#2/#3 + device QA.
 See docs/platform/MWR_NATIVE_BUILD_VERIFICATION.md.
+
+---
+
+## MWR-MRC-002 — iOS HealthKit Capability + Permission + Bridge — 2026-06-28
+Status: **DONE (guarded seam) · native activation GATE-PENDING.** Delivered a TS-only iOS
+HealthKit seam: capability + permission-status models, guarded native bridge seam
+(`MwrHealthKit` contract + gate-pending default), explain-before-prompt flow, the five-gate
+write chain, a UI **preview** (no real-write button), and 4 test files (+28 tests). tsc clean;
+jest 52/52. **NO native project change, NO live prompt, NO write, NO fake success**;
+concept-token boundary held. Human-approval gates **#1/#3/#9** requested for native activation.
+Device QA **NOT_EXECUTED**. **MR-C-003 (iOS guarded write POC) remains BLOCKED** until gates
+#1/#3/#9 + the native `MwrHealthKit` module + a named real device. Commit subject:
+`MR-C STORY-ios-healthkit-capability-permission-bridge`. See
+docs/contracts/MR_C_002_HEALTHKIT_CAPABILITY_PERMISSION_BRIDGE.md.
