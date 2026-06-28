@@ -47,3 +47,13 @@ tests). **No native HealthKit/Health Connect/permission/real-write code added.**
 stories 002–005 may resume only after: live-auth payload confirmation + native substrate
 (`ios/`/`android/`) + human-approval gates #1/#2/#3/#9 + device QA. See
 `docs/contracts/MR_C_NATIVE_WRITER_PAYLOAD_CONTRACT.md` (F8 reclassification).
+
+---
+
+## LIVE VERIFICATION GATE — 2026-06-28 (read-only; not a loop run)
+Authenticated live fetch of `GET …/test-cases/17/versions/15/runnable-payload` (HTTP 200,
+dev `root` seed credential, redacted) returned **4/4 concrete operations** → MR-C payload
+status advanced **PAYLOAD_PARTIAL → `PAYLOAD_READY`** (`payload_source_verified` = TRUE).
+Evidence: `docs/contracts/MR_C_LIVE_PAYLOAD_VERIFICATION.md`. **No native code; no fabricated
+values; stories 002–005 not started.** Remaining MR-C blockers: mobile DTO reconciliation
+to the real shape (P1, R-MWR-019), human-approval gates #1/#2/#3/#9, native substrate, device QA.

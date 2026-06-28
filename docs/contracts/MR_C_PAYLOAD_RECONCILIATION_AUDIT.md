@@ -37,8 +37,14 @@ never fabricated, never dropped.
 | Fabrication | ✅ None — missing fields → `invalid` (guarded). |
 | Not summaries-only / not template / not write-only | ✅ Correct — F8 is a distinct concrete-value GET. |
 
+> **⟳ UPDATE 2026-06-28 — superseded by live verification:** an authenticated live fetch
+> (`runnable-payload` for test_case 17 / version 15, HTTP 200) returned 4/4 concrete
+> operations → status advanced **`PAYLOAD_PARTIAL` → `PAYLOAD_READY`**. See
+> [`MR_C_LIVE_PAYLOAD_VERIFICATION.md`](MR_C_LIVE_PAYLOAD_VERIFICATION.md). The §5
+> classification below reflects the *repo-only* state at the time of this audit.
+
 ## 5. Reconciled classification
-**`PAYLOAD_PARTIAL`.** The source route exists and is consumed with no-fabrication
+**`PAYLOAD_PARTIAL`** *(at audit time; now `PAYLOAD_READY` — see update banner above).* The source route exists and is consumed with no-fabrication
 guards (strictly more than the original `PAYLOAD_GAP`), but concrete per-operation
 values are **not yet verified from repo state** (no captured/observed real response),
 so it is **not** `PAYLOAD_READY`. This refines the F8 docs' scoped label

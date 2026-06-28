@@ -97,9 +97,11 @@ auto-run.
 ```
 
 ## MR-C update (2026-06-27) — F8 payload unblock patch
-MR-C story 001 PAYLOAD_GAP **reclassified → `PAYLOAD_PARTIAL`** (reconciled 2026-06-28)
-after backend F8 added `GET …/runnable-payload` (route verified present; mobile consumes it
-operation-level, no fabrication) — but concrete per-operation values are NOT yet verified
-from repo state (authenticated live fetch PENDING). See docs/contracts/MR_C_PAYLOAD_RECONCILIATION_AUDIT.md.
+MR-C story 001 PAYLOAD_GAP → PAYLOAD_PARTIAL → **`PAYLOAD_READY`** (live-verified 2026-06-28):
+an authenticated live fetch of `GET …/test-cases/17/versions/15/runnable-payload` (HTTP 200)
+returned 4/4 concrete operations (value/unit/relative-time/idempotency_key/provenance all
+present); `payload_source_verified` = TRUE. See docs/contracts/MR_C_LIVE_PAYLOAD_VERIFICATION.md.
+P1 followup: reconcile the mobile DTO to the real shape (relative `time` object, `profile_slugs[]`).
+Native writers (002–005) still gated on gates #1/#2/#3/#9 + native substrate + device QA.
 MR-C 002–005 (native writers) still gated on substrate + gates #1/#2/#3/#9 + device QA.
 This was a one-off patch (not a phase-loop run); no native write/permission code added.

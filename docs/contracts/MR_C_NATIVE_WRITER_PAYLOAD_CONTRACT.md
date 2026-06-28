@@ -7,7 +7,17 @@
 > **Backend F8 added `GET /api/v1/test-cases/{id}/versions/{version_id}/runnable-payload`,
 > which returns concrete per-operation values.** This patch verified and consumed it.
 >
-> **Status (reconciled 2026-06-28): `PAYLOAD_PARTIAL`** — F8 route present + mobile consuming path implemented/guarded, but **concrete per-operation values are NOT yet verified from repo state** (no captured/observed real response; only a synthetic test fixture). Not `PAYLOAD_READY` until an authenticated live fetch confirms concrete values. See [`MR_C_PAYLOAD_RECONCILIATION_AUDIT.md`](MR_C_PAYLOAD_RECONCILIATION_AUDIT.md). (Earlier this was scoped as "PAYLOAD_VERIFIED (route + consuming path) — live-auth PENDING"; same facts, strict taxonomy.)
+> **Status (live-verified 2026-06-28): `PAYLOAD_READY`.** An **authenticated live fetch**
+> of `GET …/test-cases/17/versions/15/runnable-payload` (HTTP 200) returned **4/4 concrete
+> operations**, every required field present (`operation_id`, `metric_slug`, concrete
+> `value`/`unit`, relative `time` model, full-sha256 `idempotency_key`, scenario/version
+> provenance). `payload_source_verified` = **TRUE**. Full evidence:
+> [`MR_C_LIVE_PAYLOAD_VERIFICATION.md`](MR_C_LIVE_PAYLOAD_VERIFICATION.md).
+> **Caveat (P1):** the live shape differs from the mobile DTO (relative `time` object +
+> `profile_slugs[]` vs `start_time`/`end_time` + `profile_slug`) — the client DTO must be
+> reconciled before it can consume the ready payload (separate TS patch). Native writers
+> (002–005) still gated on gates #1/#2/#3/#9 + native substrate + device QA.
+> *(History: PAYLOAD_GAP → PAYLOAD_PARTIAL → PAYLOAD_READY.)*
 > - F8 route **verified present** live: `GET …/runnable-payload` → `401` (registered, auth-gated; a non-existent id also returns 401, not 404).
 > - Mobile now has a typed client (`getRunnablePayload`) + DTOs + an adapter guard, an **operation-level execution plan** (`buildExecutionPlanFromPayload`, the **preferred** MR-C input), and an **operation-level dry-run** (`simulateDryRunFromPayload`, strictly no-write) consuming concrete `value/unit/start_time/end_time/idempotency_key/operation_id`.
 > - **No fabrication:** an operation missing a required concrete field → classified `invalid` with a `reason_code` (`MISSING_VALUE`/`MISSING_UNIT`/`MISSING_TIME`/`MISSING_IDEMPOTENCY_KEY`/`MISSING_METRIC_REF`) — never dropped, never back-filled.
