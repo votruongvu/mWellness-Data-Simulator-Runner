@@ -27,7 +27,11 @@
 
 ---
 
-**(Original decision — historical; superseded by the F8 reclassification above.)**
+**(Original decision + supporting analysis §§1–9 below — historical; superseded by the F8
+reclassification at the top of this file.)** The per-operation gap was **RESOLVED** by backend F8
+(`runnable-payload`) → now **`PAYLOAD_READY`** (live-verified 2026-06-28). Present-tense
+`PAYLOAD_GAP` statements in the decision below and in §§1–9 describe the **pre-F8 finding** and are
+intentionally **preserved as history**, not rewritten.
 **Decision: `PAYLOAD_GAP` — MR-C is BLOCKED before native write implementation.**
 Per MWR-MRC-001's hard gate, no native writer/bridge code is written in this phase
 until a real per-operation payload source is verified and the native-write gates
@@ -86,14 +90,17 @@ failed, unsupported, or invalid operation is **skipped with a reason_code** and
 ## 5. Real-write gate chain (binding — all five must be true)
 ```
 dry_run_completed
-AND payload_source_verified        <-- currently FALSE (PAYLOAD_GAP)
-AND capability_checked
-AND permission_resolved_or_granted
-AND explicit_confirmation
+AND payload_source_verified        <-- NOW TRUE (PAYLOAD_READY, live-verified 2026-06-28)
+AND capability_checked             <-- still FALSE (no capability flow yet)
+AND permission_resolved_or_granted <-- still FALSE (no permission flow yet)
+AND explicit_confirmation          <-- still FALSE
 ```
 Denied/unsupported/invalid operations are skipped (reason_code), never attempted.
-Because `payload_source_verified` is FALSE, **no real write may occur** and stories
-MWR-MRC-002…005 do not proceed.
+`payload_source_verified` is **now TRUE** (PAYLOAD_READY, 2026-06-28); **no real write may
+occur** because the remaining chain links (capability / permission / explicit confirmation)
+plus human-approval gates #1/#2/#3 and device QA (`NOT_EXECUTED`) are still unmet, so stories
+MWR-MRC-002…005 do not proceed. *(The §31 original `PAYLOAD_GAP` decision below is historical;
+the gate chain itself is unchanged — only `payload_source_verified` has since flipped to TRUE.)*
 
 ## 6. Other hard blockers (must also clear before a real write)
 - ~~**Native substrate absent.**~~ **Native substrate PRESENT + `BUILD_VERIFIED`** — `ios/`/`android/` generated from the RN 0.74.5 template (2026-06-28, hard-gate #9 **approved**); template/bootstrap-only, no writer/permission code. **Native build verified 2026-06-28** (iOS `.app` + Android `.apk` compile/package from source under node 25; **build-only, not device QA**). See [`../platform/MWR_NATIVE_SUBSTRATE_BOOTSTRAP.md`](../platform/MWR_NATIVE_SUBSTRATE_BOOTSTRAP.md) · [`../platform/MWR_NATIVE_BUILD_VERIFICATION.md`](../platform/MWR_NATIVE_BUILD_VERIFICATION.md).
@@ -111,6 +118,12 @@ MWR-MRC-002…005 do not proceed.
 MR-C proceeds to MWR-MRC-002…005 only after items 1–4 above are satisfied and the
 gate chain (§5) can pass for at least one `approved_for_mrc` metric on a real device.
 Until then MR-C remains **BLOCKED (`PAYLOAD_GAP`)**.
+
+> *Superseded 2026-06-28:* the `PAYLOAD_GAP` is **cleared** — payload is **`PAYLOAD_READY`** (F8
+> live-verified) and the native substrate is **PRESENT + `BUILD_VERIFIED`** (iOS `.app` + Android
+> `.apk`). MR-C now blocks **only** on the native-writer implementation + human-approval gates
+> #1/#2/#3 + device QA (`NOT_EXECUTED`), per the reclassification banner at the top of this file.
+> *(§§1–9 above are the preserved original pre-F8 analysis; the gate set is unchanged.)*
 
 ## 9. Mapping backlog (carried — MWR-MRC-005)
 For each candidate metric (§3): confirm exact HealthKit type/unit + Health Connect

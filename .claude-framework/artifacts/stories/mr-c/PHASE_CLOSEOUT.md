@@ -1,5 +1,8 @@
 # MR-C — Phase Closeout (Native Writer MVP)
 
+> **⟳ SUPERSEDING STATUS BANNER (2026-06-28) — read first; the original story-001 result below is preserved as history, not rewritten.**
+> MR-C has since advanced past the original `PAYLOAD_GAP`: the payload gate is **`PAYLOAD_READY`** (F8 `runnable-payload` route live-verified 2026-06-28) and the native substrate is **PRESENT + `BUILD_VERIFIED`** (iOS `.app` + Android `.apk` compile/package from source). **Native write stories 002–005 remain BLOCKED** — pending human-approval gates #1/#2/#3 + device QA (`NOT_EXECUTED`); **no native writer/permission code exists.** Full current detail is in the **dated sections at the bottom of this ledger** (F8 unblock → substrate bootstrap → build verification). *The line directly below records the original 2026-06-27 story-001 closeout and is intentionally left unchanged.*
+
 **Branch:** `main` · **Result: BLOCKED (PAYLOAD_GAP).** Story 001 (payload contract) DONE; stories 002–005 NOT started. **No native write code. No fake native success. No fabricated health values. Loop stopped for human review.**
 
 ## Stories

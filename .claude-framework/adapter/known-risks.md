@@ -41,7 +41,7 @@ from any prior framework (see [`known-legacy.md`](known-legacy.md)).
   [`current-decisions.md`](current-decisions.md)).
 
 ## MR-C payload (2026-06-27 update)
-- **R-MWR-017 (was P0, now P1):** MR-C per-operation `PAYLOAD_GAP` — **resolved at the route level** by backend F8 `GET …/runnable-payload` (verified present; consumed by the mobile operation-level plan/dry-run with no-fabrication guards). **Residual P1:** an *authenticated live fetch* of concrete values for a real version has not been run (no token this session) — confirm before any native write. No values were fabricated.
+- **R-MWR-017 (was P0, now P1):** MR-C per-operation `PAYLOAD_GAP` — **resolved at the route level** by backend F8 `GET …/runnable-payload` (verified present; consumed by the mobile operation-level plan/dry-run with no-fabrication guards). **Residual P1:** an *authenticated live fetch* of concrete values for a real version has not been run (no token this session) — confirm before any native write. No values were fabricated. **[Superseded 2026-06-28 — see "R-MWR-017 → RESOLVED" below: the live fetch was run (HTTP 200, 4/4 concrete ops); `PAYLOAD_READY`, no residual payload gap.]**
 - **R-MWR-018 (P1):** MR-C native writers (002–005) remain blocked on native substrate (no `ios/`/`android/` projects), human-approval gates #1/#2/#3/#9, and device QA (`NOT_EXECUTED`) — independent of the payload gate.
 
 ## MR-C payload (2026-06-28 — live verification)

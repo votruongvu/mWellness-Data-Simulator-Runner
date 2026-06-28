@@ -115,7 +115,9 @@ This was a one-off patch (not a phase-loop run); no native write/permission code
 matches app.json/index.js. Template/bootstrap-only — **no HealthKit/Health Connect/writer/
 permission code**. `react-native config` detects ios/android + autolinks keychain/safe-area/
 screens; tsc clean; jest 24/24. Full native build (pod install / xcodebuild / gradle) NOT run
-(documented blockers incl. node v25 > RN 0.74 tested range). PAYLOAD_READY + DTO READY unchanged.
+(documented blockers incl. node v25 > RN 0.74 tested range). **[Superseded 2026-06-28: the native
+build was subsequently RUN and VERIFIED — iOS `.app` + Android `.apk` under node 25; see the
+"Native Build Verification" entry below.]** PAYLOAD_READY + DTO READY unchanged.
 MR-C native write POCs (002–005) STILL BLOCKED on gates #1/#2/#3 + device QA (NOT_EXECUTED).
 See docs/platform/MWR_NATIVE_SUBSTRATE_BOOTSTRAP.md.
 
