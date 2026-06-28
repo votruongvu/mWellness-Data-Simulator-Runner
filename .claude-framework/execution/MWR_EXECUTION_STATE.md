@@ -146,3 +146,14 @@ gates **#1** (Apple Health auth/write) / **#3** (prompt timing+copy + final expl
 **#9** (HealthKit entitlement + Info.plist + native module/ADR) — emitted as a Human Approval
 Request. Device QA remains **NOT_EXECUTED**. **MR-C-003 (iOS write POC) BLOCKED** until #1/#3/#9 +
 native module + a named real device. See docs/contracts/MR_C_002_HEALTHKIT_CAPABILITY_PERMISSION_BRIDGE.md.
+
+## MR-C update (2026-06-28) — MR-C-003 readiness packet (planning only)
+Prepared the **MR-C-003 iOS guarded HealthKit write POC readiness packet** (docs/planning only —
+NO native module, NO Info.plist/entitlement change, NO prompt, NO write, NO real-write button). It
+assembles: the gate **#1/#3/#9/#10** approval checklist, the concrete device-QA fields (real iPhone
+12+/iOS 16+/named QA owner — all `TO_VERIFY`, not fabricated), the **final HealthKit permission copy
+for review** (P10 pre-prompt + Info.plist `NSHealthUpdate/ShareUsageDescription` + P11 status,
+aligned to the approved design copy bank), and the **entitlement/Info.plist/native-module + ADR-MWR-011
+change plan** (plan only). **Go/No-Go = NO-GO; MR-C-003 classified BLOCKED** — all four gates PENDING,
+no device/owner named, native module + ADR-MWR-011 absent, candidate-metric writability TO_VERIFY.
+See docs/contracts/MR_C_003_IOS_WRITE_POC_READINESS_PACKET.md.

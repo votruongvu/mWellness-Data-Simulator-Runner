@@ -95,3 +95,14 @@ Device QA **NOT_EXECUTED**. **MR-C-003 (iOS guarded write POC) remains BLOCKED**
 #1/#3/#9 + the native `MwrHealthKit` module + a named real device. Commit subject:
 `MR-C STORY-ios-healthkit-capability-permission-bridge`. See
 docs/contracts/MR_C_002_HEALTHKIT_CAPABILITY_PERMISSION_BRIDGE.md.
+
+---
+
+## MR-C-003 READINESS PACKET — 2026-06-28 (planning only; not a loop run)
+Prepared the iOS guarded HealthKit write-POC **readiness packet**: gate #1/#3/#9/#10 approval
+checklist, device-QA fields (real iPhone 12+/iOS 16+/named owner — all TO_VERIFY, not fabricated),
+final permission copy for review (P10/Info.plist/P11, aligned to the design copy bank), and the
+entitlement/Info.plist/native-module + ADR-MWR-011 change plan. **NO native module, NO
+Info.plist/entitlement change, NO prompt, NO write, NO real-write button.** **MR-C-003 go/no-go =
+NO-GO → classified BLOCKED** (all four gates PENDING + no device/owner + native module/ADR absent).
+See docs/contracts/MR_C_003_IOS_WRITE_POC_READINESS_PACKET.md.

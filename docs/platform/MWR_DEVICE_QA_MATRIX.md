@@ -62,3 +62,10 @@ explain-before-prompt enforcement, and the gated bridge's no-fake-success. Still
 permission prompt, idempotency, and any real write. **Manual/device QA remains `NOT_EXECUTED`;
 a named iPhone + iOS version + QA owner remain `TO_VERIFY` (none available — not fabricated).**
 The MR-C-003 real-write POC stays BLOCKED until this matrix names a concrete device + owner.
+
+## MR-C-003 readiness packet (2026-06-28) — device fields to fill (still NOT_EXECUTED)
+The MR-C-003 iOS write-POC **readiness packet** specifies the concrete device fields that must
+be filled here before the real-write POC can be approved: a real **iPhone 12+**, **iOS 16+**, an
+approved DEV/QA Apple ID, a HealthKit-enabled App ID/provisioning profile, and a **named iOS device
+QA owner**. **These remain `TO_VERIFY` / `NOT_EXECUTED` — none were available to fill and none were
+fabricated.** Source: [`../contracts/MR_C_003_IOS_WRITE_POC_READINESS_PACKET.md`](../contracts/MR_C_003_IOS_WRITE_POC_READINESS_PACKET.md).
