@@ -133,13 +133,22 @@ export type OperationReasonCode =
   | 'MISSING_VALUE'
   | 'MISSING_UNIT'
   | 'MISSING_TIME'
+  | 'INVALID_TIME_MODEL'
   | 'MISSING_IDEMPOTENCY_KEY'
   | 'MISSING_METRIC_REF'
+  | 'MISSING_PROVENANCE'
   | 'METRIC_NOT_WRITABLE_ON_PLATFORM'
   | 'METRIC_INACTIVE'
   | 'METRIC_METADATA_MISSING'
   // Reserved — never emitted by the operation-level builder (MR-D):
   | 'PERMISSION_MISSING';
+
+/** Raw relative time offsets, preserved verbatim from the backend payload. */
+export interface PlanRelativeTime {
+  model: string;
+  startOffsetMinutes: number;
+  endOffsetMinutes: number;
+}
 
 /** One concrete planned operation, preserving backend provenance verbatim. */
 export interface PlanConcreteOperation {
@@ -151,13 +160,22 @@ export interface PlanConcreteOperation {
   metricSlug?: string;
   metricId?: string;
   destinationSlug?: string;
-  profileSlug?: string;
+  /**
+   * Target profiles, preserved as an array (live shape). Never collapsed: if
+   * more than one profile is present, all are kept and the native writer (later
+   * phase, MR-D) decides per-profile handling.
+   */
+  profileSlugs?: string[];
   operationKind: string;
   /** Concrete value — verbatim from the backend; undefined only when missing. */
   value?: number | string;
   unit?: string;
-  startTime?: string;
-  endTime?: string;
+  /** Raw relative time offsets (verbatim) — absolute times resolved at write. */
+  time?: PlanRelativeTime;
+  /** Resolved absolute start — present ONLY when a base instant was injected. */
+  startTimeIso?: string;
+  /** Resolved absolute end — present ONLY when a base instant was injected. */
+  endTimeIso?: string;
   /** Stable backend idempotency key — preserved verbatim. */
   idempotencyKey?: string;
   metadata?: Record<string, unknown>;
@@ -169,8 +187,12 @@ export interface PlanConcreteOperation {
 /** Per-scenario grouping of concrete operations, in backend order. */
 export interface PlanConcreteScenarioGroup {
   scenarioId: string;
+  scenarioSlug?: string;
   scenarioName: string;
-  /** Scenario order position from the backend order_index. */
+  /**
+   * Scenario order position. The backend order_index may be null (live shape);
+   * builders then use the scenario's array position (0-based) as the order.
+   */
   scenarioOrder: number;
   operations: PlanConcreteOperation[];
 }

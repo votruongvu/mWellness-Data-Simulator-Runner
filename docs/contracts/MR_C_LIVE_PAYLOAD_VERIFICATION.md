@@ -60,5 +60,5 @@ op `MISSING_TIME` because it looks for `start_time`/`end_time`):
 - Remaining real-write gate-chain items still FALSE/pending: `capability_checked`, `permission_resolved_or_granted`, `explicit_confirmation` — plus native substrate (no `ios/`/`android/`), human-approval gates #1/#2/#3/#9, device QA (`NOT_EXECUTED`). **No write occurred or is reachable.**
 
 ## Followups
-- **P1:** reconcile the mobile runnable-payload DTO/guard/operationPlan to the real shape (relative `time` object, `profile_slugs[]`, top-level fields, null `order_index`) so the operation-level plan/dry-run consume real ops (separate small TS patch — not this gate).
+- ~~**P1:** reconcile the mobile runnable-payload DTO/guard/operationPlan to the real shape.~~ **✅ DONE 2026-06-28 (R-MWR-019)** — DTO/validator/operationPlan/dry-run aligned to the real shape (`profile_slugs[]`, relative `time` object, top-level fields, null `order_index`); relative→absolute via an **injected clock** (`src/runner/timeModel.ts`, no `Date.now` in core); validation not weakened (added `INVALID_TIME_MODEL`/`MISSING_PROVENANCE`). The verified live shape now validates with **zero issues**. `tsc --noEmit` clean; jest 24/24 pass.
 - **P1 (to resume 002–005):** human-approve gates #1/#2/#3/#9; generate native `ios/`/`android/` projects; real iOS + Android(Health Connect) devices; populate device QA matrix + owner.

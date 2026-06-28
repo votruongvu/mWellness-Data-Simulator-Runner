@@ -47,3 +47,13 @@ from any prior framework (see [`known-legacy.md`](known-legacy.md)).
 ## MR-C payload (2026-06-28 — live verification)
 - **R-MWR-017 → RESOLVED:** the MR-C per-operation payload gate is **`PAYLOAD_READY`** — an authenticated live fetch of `runnable-payload` (test_case 17 / version 15, HTTP 200) returned 4/4 concrete operations (value/unit/relative-time/idempotency_key/provenance). No fabrication; dev `root` seed credential used (redacted). Evidence: `docs/contracts/MR_C_LIVE_PAYLOAD_VERIFICATION.md`.
 - **R-MWR-019 (P1, NEW):** the mobile runnable-payload **DTO is mis-aligned to the real F8 shape** — backend returns a relative `time:{model,start_offset_minutes,end_offset_minutes}` object + `profile_slugs[]` + top-level `destination_slug`/`time_model_note`/`operation_count`, while `runnablePayloadTypes.ts` expects `start_time`/`end_time` strings + `profile_slug`. As coded, `validateRunnablePayload` would mark every real op `MISSING_TIME`. **Reconcile the DTO/guard/operationPlan before the mobile consumes the ready payload** (resolve relative→absolute via the injected clock, ADR-MWR-008). Separate TS patch — not done in the verification gate.
+
+## R-MWR-019 → RESOLVED (2026-06-28)
+The mobile runnable-payload DTO/validator/operationPlan/dry-run were **aligned to the real F8
+backend shape**: `profile_slugs[]` (preserved as an array, never collapsed), the relative
+`time:{model,start_offset_minutes,end_offset_minutes}` object, and the extra top-level fields;
+`order_index` may be null (ordering = array position). Relative→absolute resolution is via an
+**injected clock** (`src/runner/timeModel.ts`) — no `Date.now()` in core (deterministic/replay-safe).
+Validation was **not weakened** (added `INVALID_TIME_MODEL` + `MISSING_PROVENANCE`; still rejects
+missing value/unit/idempotency/metric-ref). The verified live shape validates with **zero issues**.
+`tsc --noEmit` clean; jest **24/24** pass. No native code; no fabrication.

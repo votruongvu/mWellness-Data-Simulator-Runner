@@ -10,7 +10,9 @@
  *  - It NEVER reports success as if data were written. The result explicitly
  *    states "No health data was written." and reports SIMULATED counts only.
  *  - It NEVER fabricates a value/unit/time/idempotency: it echoes only what the
- *    plan already carries (which came verbatim from the backend).
+ *    plan already carries (which came verbatim from the backend). The relative
+ *    time offsets are echoed; the resolved absolute ISO times appear ONLY when
+ *    the plan already carried them (from an injected base instant).
  *
  * Distinct from the MR-B metric-level dry-run (dryRun.ts), which is kept as the
  * read-only fallback. Reuses the safety statement convention from MR-B.
@@ -20,6 +22,7 @@ import {
   ConcreteExecutionPlan,
   OperationReasonCode,
   OperationStatus,
+  PlanRelativeTime,
 } from './executionPlan';
 
 /** One simulated operation, echoing the plan's concrete detail verbatim. */
@@ -31,12 +34,17 @@ export interface DryRunOperation {
   metricSlug?: string;
   metricId?: string;
   destinationSlug?: string;
-  profileSlug?: string;
+  /** Target profiles, preserved as an array (never collapsed). */
+  profileSlugs?: string[];
   operationKind: string;
   value?: number | string;
   unit?: string;
-  startTime?: string;
-  endTime?: string;
+  /** Raw relative time offsets (verbatim from the plan). */
+  time?: PlanRelativeTime;
+  /** Resolved absolute start — present only if the plan carried it. */
+  startTimeIso?: string;
+  /** Resolved absolute end — present only if the plan carried it. */
+  endTimeIso?: string;
   idempotencyKey?: string;
   status: OperationStatus;
   reasonCode: OperationReasonCode;
@@ -111,12 +119,13 @@ export function simulateDryRunFromPayload(
         metricSlug: op.metricSlug,
         metricId: op.metricId,
         destinationSlug: op.destinationSlug,
-        profileSlug: op.profileSlug,
+        profileSlugs: op.profileSlugs,
         operationKind: op.operationKind,
         value: op.value,
         unit: op.unit,
-        startTime: op.startTime,
-        endTime: op.endTime,
+        time: op.time,
+        startTimeIso: op.startTimeIso,
+        endTimeIso: op.endTimeIso,
         idempotencyKey: op.idempotencyKey,
         status: op.status,
         reasonCode: op.reasonCode,

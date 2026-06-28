@@ -29,6 +29,7 @@ import {
   simulateDryRunFromPayload,
   DryRunResultConcrete,
 } from '../runner/operationDryRun';
+import type {PlanRelativeTime} from '../runner/executionPlan';
 import {ErrorState, LoadingState} from '../shared/components/ScreenStates';
 import {StatusBadge} from '../shared/components/StatusBadge';
 import {useApiResource} from '../shared/hooks/useApiResource';
@@ -146,8 +147,7 @@ function OperationDryRun(): React.JSX.Element {
             </View>
             <Text style={styles.opDetailLine} selectable>
               {formatValue(op.value, op.unit)}
-              {op.startTime ? ` · ${op.startTime}` : ''}
-              {op.endTime ? ` → ${op.endTime}` : ''}
+              {formatTime(op.startTimeIso, op.endTimeIso, op.time)}
             </Text>
             <Text style={styles.opReason}>{op.reasonCode}</Text>
             {op.idempotencyKey ? (
@@ -173,6 +173,25 @@ function formatValue(value: number | string | undefined, unit?: string): string 
     return '(no value)';
   }
   return unit ? `${value} ${unit}` : `${value}`;
+}
+
+/**
+ * Format the operation's time. Prefers the resolved absolute ISO window (only
+ * present when a base instant was injected); otherwise shows the raw relative
+ * offset-minutes. Never fabricates an absolute time when none was resolved.
+ */
+function formatTime(
+  startTimeIso?: string,
+  endTimeIso?: string,
+  time?: PlanRelativeTime,
+): string {
+  if (startTimeIso) {
+    return ` · ${startTimeIso}${endTimeIso ? ` → ${endTimeIso}` : ''}`;
+  }
+  if (time) {
+    return ` · ${time.model} ${time.startOffsetMinutes}→${time.endOffsetMinutes} min`;
+  }
+  return '';
 }
 
 /* ------------------------------ MR-B fallback ----------------------------- */

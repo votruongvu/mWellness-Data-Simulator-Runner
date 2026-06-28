@@ -101,7 +101,9 @@ MR-C story 001 PAYLOAD_GAP → PAYLOAD_PARTIAL → **`PAYLOAD_READY`** (live-ver
 an authenticated live fetch of `GET …/test-cases/17/versions/15/runnable-payload` (HTTP 200)
 returned 4/4 concrete operations (value/unit/relative-time/idempotency_key/provenance all
 present); `payload_source_verified` = TRUE. See docs/contracts/MR_C_LIVE_PAYLOAD_VERIFICATION.md.
-P1 followup: reconcile the mobile DTO to the real shape (relative `time` object, `profile_slugs[]`).
+Mobile DTO **aligned to the real F8 shape (2026-06-28, R-MWR-019 done)**: `profile_slugs[]` +
+relative `time` object consumed; relative→absolute via an injected clock (no `Date.now` in core);
+validation not weakened; live shape validates with zero issues (tsc clean, jest 24/24).
 Native writers (002–005) still gated on gates #1/#2/#3/#9 + native substrate + device QA.
 MR-C 002–005 (native writers) still gated on substrate + gates #1/#2/#3/#9 + device QA.
 This was a one-off patch (not a phase-loop run); no native write/permission code added.
