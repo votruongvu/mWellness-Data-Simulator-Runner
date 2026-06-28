@@ -57,3 +57,13 @@ status advanced **PAYLOAD_PARTIAL → `PAYLOAD_READY`** (`payload_source_verifie
 Evidence: `docs/contracts/MR_C_LIVE_PAYLOAD_VERIFICATION.md`. **No native code; no fabricated
 values; stories 002–005 not started.** Remaining MR-C blockers: mobile DTO reconciliation
 to the real shape (P1, R-MWR-019), human-approval gates #1/#2/#3/#9, native substrate, device QA.
+
+---
+
+## NATIVE SUBSTRATE BOOTSTRAP — 2026-06-28 (one-off; not a loop run; gate #9 approved)
+`ios/` + `android/` generated from the RN 0.74.5 template (module name `mWellnessMobileRunner`);
+template/bootstrap-only, **no HealthKit/Health Connect/writer/permission code**. Validation:
+`react-native config` OK (detects ios/android, autolinks existing native deps), tsc clean, jest
+24/24; full native build NOT run (documented blockers). Substrate **PRESENT**; PAYLOAD_READY;
+DTO READY. **MR-C stories 002–005 remain BLOCKED/NOT-STARTED** pending gates #1/#2/#3 + device QA
+(NOT_EXECUTED). See docs/platform/MWR_NATIVE_SUBSTRATE_BOOTSTRAP.md.

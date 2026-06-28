@@ -96,7 +96,7 @@ Because `payload_source_verified` is FALSE, **no real write may occur** and stor
 MWR-MRC-002…005 do not proceed.
 
 ## 6. Other hard blockers (must also clear before a real write)
-- **Native substrate absent.** No `ios/`/`android/` RN projects exist (never generated); no Swift/Kotlin; gate #9 (native substrate while unvalidated).
+- ~~**Native substrate absent.**~~ **Native substrate PRESENT** — `ios/`/`android/` generated from the RN 0.74.5 template (2026-06-28, hard-gate #9 **approved**); template/bootstrap-only, no writer/permission code. Full native build not yet verified. See [`../platform/MWR_NATIVE_SUBSTRATE_BOOTSTRAP.md`](../platform/MWR_NATIVE_SUBSTRATE_BOOTSTRAP.md).
 - **Real-write human-approval gates** #1 (Apple Health write), #2 (Health Connect write), #3 (permission-prompt timing/copy) — not yet approved.
 - **Device QA `NOT_EXECUTED`.** `docs/platform/MWR_DEVICE_QA_MATRIX.md` names no concrete devices/OS versions; real writes require a real device (simulator/emulator cannot validate real writes). MR4/MR5-equivalent approval is blocked until devices + a QA owner are named.
 

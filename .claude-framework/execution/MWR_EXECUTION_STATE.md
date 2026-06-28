@@ -26,8 +26,8 @@ PRODUCT_STORIES: NONE — no MR0/MR1+ user stories have been authored. The loop
   req-to-stories / story-to-tasks once a phase is approved to start.
 
 # ---- Build / substrate baseline (all TO_VERIFY until the RN app is scaffolded) ----
-RN_BASELINE: NOT_SCAFFOLDED (TO_VERIFY — React Native + TypeScript app does not exist yet; RN version/New-Arch/Hermes pin to be decided at MR1)
-NATIVE_SUBSTRATE: NOT_PRESENT (no ios/ or android/; generation is a hard gate — substrate work while unvalidated halts the loop, MWR_HUMAN_APPROVAL_GATES gate 9)
+RN_BASELINE: SCAFFOLDED — React Native 0.74.5 + TypeScript (app exists since MR-A; ADR-MWR-010)
+NATIVE_SUBSTRATE: PRESENT — ios/ + android/ generated from the RN 0.74.5 template (2026-06-28; hard-gate #9 APPROVED); template/bootstrap-only, NO writer/permission code; full native build not yet verified
 NATIVE_MODULE_PREFIX: TO_VERIFY (proposed `Mwr<Capability>`; subject to an ADR)
 BACKEND_ENDPOINTS: TO_VERIFY (exact MWDS `/mobile/*` routes resolved at MR0; runnable data comes from the authenticated backend API — never fabricated)
 PER_METRIC_WRITABILITY: TO_VERIFY (no metric assumed writable on Apple Health or Health Connect until verified per phase at MR4/MR5)
@@ -78,9 +78,9 @@ before implementation**; **MR3 dry-run plan exists before MR4/MR5 real writers**
   framework manifest is fully authored (authored by the bootstrap orchestrator).
 - `python3 .claude-framework/scripts/validate_context_pack_paths.py` → expected
   PASS (script is present; honors `TO_VERIFY` / `DEFERRED` defer markers).
-- `ios/` + `android/` → NOT_PRESENT (substrate generation is a hard gate).
-- `package.json` / `node_modules` → NOT_PRESENT (no RN app yet → `npm test`,
-  `npx tsc --noEmit`, native verify are reported `NOT_RUN_<reason>`, never PASS).
+- `ios/` + `android/` → PRESENT (generated 2026-06-28 under approved gate #9; template/bootstrap-only, no native writer/permission code; full native build unverified).
+- `package.json` / `node_modules` → PRESENT (RN app since MR-A) → `npx tsc --noEmit`
+  clean, `npx jest` 24/24; native build (pod install / xcodebuild / gradle) NOT yet run.
 - `DRY_RUN_DEFAULT` TRUE · `REAL_WRITE_ENABLED` FALSE · no real Apple Health /
   Health Connect write path exists.
 
@@ -107,3 +107,13 @@ validation not weakened; live shape validates with zero issues (tsc clean, jest 
 Native writers (002–005) still gated on gates #1/#2/#3/#9 + native substrate + device QA.
 MR-C 002–005 (native writers) still gated on substrate + gates #1/#2/#3/#9 + device QA.
 This was a one-off patch (not a phase-loop run); no native write/permission code added.
+
+## MR-C update (2026-06-28) — Native Substrate Bootstrap
+**Native substrate PRESENT** — `ios/` + `android/` generated from the RN 0.74.5 template
+(hard-gate #9 **APPROVED** by human instruction); app/module name `mWellnessMobileRunner`
+matches app.json/index.js. Template/bootstrap-only — **no HealthKit/Health Connect/writer/
+permission code**. `react-native config` detects ios/android + autolinks keychain/safe-area/
+screens; tsc clean; jest 24/24. Full native build (pod install / xcodebuild / gradle) NOT run
+(documented blockers incl. node v25 > RN 0.74 tested range). PAYLOAD_READY + DTO READY unchanged.
+MR-C native write POCs (002–005) STILL BLOCKED on gates #1/#2/#3 + device QA (NOT_EXECUTED).
+See docs/platform/MWR_NATIVE_SUBSTRATE_BOOTSTRAP.md.

@@ -57,3 +57,11 @@ backend shape**: `profile_slugs[]` (preserved as an array, never collapsed), the
 Validation was **not weakened** (added `INVALID_TIME_MODEL` + `MISSING_PROVENANCE`; still rejects
 missing value/unit/idempotency/metric-ref). The verified live shape validates with **zero issues**.
 `tsc --noEmit` clean; jest **24/24** pass. No native code; no fabrication.
+
+## R-MWR-016 update (2026-06-28) — native substrate
+Native substrate (`ios/`/`android/`) was **bootstrapped** from the RN 0.74.5 template under
+human-approved hard-gate #9 — template/bootstrap-only, no writer/permission code. **Residual
+(P1):** the **full native build is unverified** (pod install / xcodebuild / gradle assembleDebug
+NOT run; node v25.1.0 is newer than RN 0.74's tested range — use node 20 LTS if the native build
+fails). No real write may occur: gates #1/#2/#3 (real Apple Health / Health Connect writes +
+permission prompt) remain pending and device QA remains NOT_EXECUTED.
